@@ -180,14 +180,19 @@ public class State {
 
 		for (int i = 0; i < hexgame.BSIZE; i++) {
 			for (int j = 0; j < hexgame.BSIZE; j++) {
-				System.out.print(hashMap.get(new Coordinate(i, j)).getValue());
+				System.out.print(hashMap.get(new Coordinate(j, i)).getValue());
 				System.out.print(" | ");
+				
+				
+			
 			}
 			System.out.println();
 		}
 
 		System.out.println();
 		System.out.println();
+		
+
 	}
 
 	public ArrayList<State> generateStates() {

@@ -43,10 +43,9 @@ public class hexgame {
 
 	final static Color COLOURTHREE = Color.lightGray;
 	final static Color COLOURTHREETXT = Color.WHITE;
-	
+
 	final static Color COLOURFOUR = Color.BLACK;
 	final static Color COLOURFOURTXT = Color.BLACK;
-
 
 	// final static Color COLOURTWO = new Color(0,0,0,200);
 
@@ -110,7 +109,7 @@ public class hexgame {
 					Coordinate coordinate = new Coordinate(i, j);
 					hashMap.put(coordinate, guiCell);
 
-				} else if (i == BSIZE-1) {
+				} else if (i == BSIZE - 1) {
 					GuiCell guiCell = new GuiCell(0, wall);
 					Coordinate coordinate = new Coordinate(i, j);
 					hashMap.put(coordinate, guiCell);
@@ -162,21 +161,37 @@ public class hexgame {
 		;
 		State state = new State(new HashMap(hashMap2), null, ai, 0);
 		state.generateStates();
-
+		// displayBoardConsole();
 	}
 
 	public void displayBoardConsole() {
-		Collection c = hashMap.values();
-		Iterator itr = c.iterator();
+		// Collection c = hashMap.values();
+		// Iterator itr = c.iterator();
+		//
+		// for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
+		//
+		// entry.getKey().print();
+		// entry.getValue().print();
+		//
+		// // Tab tab = entry.getValue();
+		// // do something with key and/or tab
+		// }
 
-		for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
+		for (int i = 0; i < hexgame.BSIZE; i++) {
+			for (int j = 0; j < hexgame.BSIZE; j++) {
+				System.out.print(hashMap.get(new Coordinate(i, j)).getValue());
+				System.out.print(" | ");
 
-			entry.getKey().print();
-			entry.getValue().print();
-
-			// Tab tab = entry.getValue();
-			// do something with key and/or tab
+				if (hashMap.get(new Coordinate(i, j)).getValue() == 6) {
+					System.out.println(i);
+					System.out.println(j);
+				}
+			}
+			System.out.println();
 		}
+
+		System.out.println();
+		System.out.println();
 	}
 
 	public void updateBoard() {
@@ -188,6 +203,7 @@ public class hexgame {
 			board[key.getX()][key.getY()] = entry.getValue();
 			// Tab tab = entry.getValue();
 			// do something with key and/or tab
+
 		}
 
 	}
@@ -205,7 +221,7 @@ public class hexgame {
 	}
 
 	public void initializeAISheeps() {
-		hashMap.put(new Coordinate(5, 4), new GuiCell(numberOfSheepsPerPlayer, ai));
+		hashMap.put(new Coordinate(2, 1), new GuiCell(numberOfSheepsPerPlayer, ai));
 
 	}
 
