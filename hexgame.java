@@ -179,7 +179,7 @@ public class hexgame {
 	}
 	
 	public void initializeAISheeps(){
-		hashMap.put(new Coordinate(2, 2), new GuiCell(numberOfSheepsPerPlayer,	ai));
+		hashMap.put(new Coordinate(5, 5), new GuiCell(numberOfSheepsPerPlayer,	ai));
 
 
 	}
