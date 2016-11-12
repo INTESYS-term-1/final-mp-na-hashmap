@@ -203,12 +203,11 @@ public class State {
 							// 1. left diagonal up 2. left diag down 3. right
 							// diag
 							// up 4. rright diag down 5. horitzontal
-							if (hashMap.get(new Coordinate(k, l)).getOwner() == free) {
-
-								// nasa diagonal sya
-								if (i - k == j - l) {
-									for (int m = j; m > 0; m--) {
-										for (int n = k; n > 0; n--) {
+							if (k > 0 && l > 0)
+								if (hashMap.get(new Coordinate(k, l)).getOwner() == free) {
+									// nasa diagonal sya
+									if (i - k == j - l) {
+										for (int m = i, n = j; m > 0 && n > 0; m--) {
 											if (hashMap.get(new Coordinate(m - 1, n - 1)).getOwner() == free) {
 												if (m - 2 <= 0 || n - 2 <= 0) {
 													for (int transfer = hashMap.get(new Coordinate(i, j)).getValue()
@@ -224,8 +223,10 @@ public class State {
 															GuiCell temp = new GuiCell(entry.getValue());
 															// Tab tab =
 															// entry.getValue();
-															// do something with
-															// key and/or tab
+															// do something
+															// with
+															// key and/or
+															// tab
 															hashMap2.put(key, temp);
 														}
 
@@ -243,47 +244,57 @@ public class State {
 														states.add(newState);
 
 													}
-												} /*
-													 * else if (board[n - 2][m -
-													 * 2].getOwner() == player
-													 * || board[n - 2][n -
-													 * 2].getOwner() == ai) {
-													 * for (int transfer =
-													 * origValue - 1; transfer >
-													 * 0; transfer--) {
-													 * System.out.
-													 * println("Transfer 1");
-													 * 
-													 * GuiCell[][] tempBoard =
-													 * new
-													 * GuiCell[bSize][bSize];
-													 * 
-													 * for (int copyi = 0; copyi
-													 * < board.length; copyi++)
-													 * for (int copyj = 0; copyj
-													 * < board[copyi].length;
-													 * copyj++)
-													 * tempBoard[copyi][copyj] =
-													 * board[copyi][copyj];
-													 * 
-													 * tempBoard[m - 1][n - 1] =
-													 * new GuiCell(m - 1, n - 1,
-													 * transfer, ai);
-													 * tempBoard[i][j].setValue(
-													 * origValue - transfer);
-													 * 
-													 * State newState = new
-													 * State(tempBoard, this,
-													 * player, level + 1);
-													 * 
-													 * states.add(newState); } }
-													 */
-											}
+													n--;/*
+														 * 
+														 * else if (board[n -
+														 * 2][m - 2].getOwner()
+														 * == player || board[n
+														 * - 2][n -
+														 * 2].getOwner() == ai)
+														 * { for (int transfer =
+														 * origValue - 1;
+														 * transfer > 0;
+														 * transfer--) {
+														 * System.out.
+														 * println("Transfer 1"
+														 * );
+														 * 
+														 * GuiCell[][] tempBoard
+														 * = new
+														 * GuiCell[bSize][bSize]
+														 * ;
+														 * 
+														 * for (int copyi = 0;
+														 * copyi < board.length;
+														 * copyi++) for (int
+														 * copyj = 0; copyj <
+														 * board[copyi].length;
+														 * copyj++)
+														 * tempBoard[copyi][
+														 * copyj] =
+														 * board[copyi][copyj];
+														 * 
+														 * tempBoard[m - 1][n -
+														 * 1] = new GuiCell(m -
+														 * 1, n - 1, transfer,
+														 * ai); tempBoard[i][j].
+														 * setValue( origValue -
+														 * transfer);
+														 * 
+														 * State newState = new
+														 * State(tempBoard,
+														 * this, player, level +
+														 * 1);
+														 * 
+														 * states.add(newState);
+														 * } }
+														 */
+												}
 
+											}
 										}
 									}
 								}
-							}
 
 							// if (i - k == j - l || k - i == j - l || i - k ==
 							// l - j || k - i == l - j || i == k) {
