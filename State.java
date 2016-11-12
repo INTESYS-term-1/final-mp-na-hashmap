@@ -1,10 +1,16 @@
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 
 public class State {
-	
-	
-	
-	private GuiCell[][] board;
+
+	Map<Coordinate, GuiCell> hashMap = new HashMap<Coordinate, GuiCell>();
+
+	// private GuiCell[][] board;
 	/* Static Variables */
 	final static int player = -1;
 	final static int free = 0;
@@ -23,9 +29,8 @@ public class State {
 	ArrayList<State> states;
 	ArrayList<State> statesTemp = new ArrayList<State>();
 
-
-	public State(GuiCell[][] board, State parent, int nextTurn, int level) {
-		this.board = board;
+	public State(Map<Coordinate, GuiCell> hashMap, State parent, int nextTurn, int level) {
+		this.hashMap = hashMap;
 		this.parentState = parent;
 		this.currentTurn = nextTurn;
 		this.level = level;
@@ -33,10 +38,10 @@ public class State {
 
 	}
 
-	public State(GuiCell[][] guiCells) {
-		board = guiCells;
-		currentTurn = ai;
-	}
+	// public State(GuiCell[][] guiCells) {
+	// board = guiCells;
+	// currentTurn = ai;
+	// }
 
 	// @Override
 	// public boolean equals(Object o) {
@@ -46,8 +51,8 @@ public class State {
 	// }
 
 	// function to get board
-	public GuiCell[][] getBoard() {
-		return this.board;
+	public Map<Coordinate, GuiCell> getHashMap() {
+		return this.hashMap;
 	}
 
 	public int getLevel() {
@@ -57,16 +62,10 @@ public class State {
 	@Override
 	public boolean equals(Object o) {
 		State s = (State) o;
-		for (int i = 0; i < hexgame.BSIZE; i++) {
-			for (int j = 0; j < hexgame.BSIZE; j++) {
-				if (this.board[i][j].getValue() == s.getBoard()[i][j].getValue()) {
-					return false;
-				}
-
-			}
+		if (hashMap.equals(s.getHashMap())) {
+			return true;
 		}
-
-		return true;
+		return false;
 	}
 
 	// public boolean contains(ArrayList<GuiCell[][]> boards, GuiCell
@@ -83,18 +82,18 @@ public class State {
 
 	public void computeScore() {
 
-		System.out.println("nagcomputer score");
-
-		int sum = 0;
-		for (int i = 0; i < hexgame.BSIZE; i++) {
-			for (int j = 0; j < hexgame.BSIZE; j++) {
-				if (board[i][j].getOwner() == ai) {
-					sum++;
-				}
-			}
-		}
-
-		score = sum;
+		// System.out.println("nagcomputer score");
+		//
+		// int sum = 0;
+		// for (int i = 0; i < hexgame.BSIZE; i++) {
+		// for (int j = 0; j < hexgame.BSIZE; j++) {
+		// if (board[i][j].getOwner() == ai) {
+		// sum++;
+		// }
+		// }
+		// }
+		//
+		// score = sum;
 
 		propagateScore();
 	}
@@ -129,11 +128,183 @@ public class State {
 		// }
 		//
 		// }
+
+		Collection c = hashMap.values();
+		Iterator itr = c.iterator();
+
+		for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
+
+			entry.getKey().print();
+			entry.getValue().print();
+
+			// Tab tab = entry.getValue();
+			// do something with key and/or tab
+		}
+	}
+
+	public void print() {
+
+		// for (int j = 0; j < Gui.BOARDROW; j++) {
+		// System.out.println();
+		// for (int z = 0; z < Gui.BOARDCOLUMN; z++) {
+		// System.out.print(dummy[j][z].getValue());
+		// System.out.print(" | ");
+		//
+		// }
+		//
+		// }
+
+		// Collection c = hashMap.values();
+		// Iterator itr = c.iterator();
+		//
+		// System.out.println("-------------------------------------------------------");
+		// int i = 0;
+		// for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
+		//
+		// if (i != 0)
+		// if (i % hexgame.BSIZE - 1 == 0) {
+		// System.out.println();
+		// System.out.print(entry.getValue().getValue());
+		// System.out.print(" | ");
+		// } else {
+		// System.out.print(entry.getValue().getValue());
+		// System.out.print(" | ");
+		// }
+		//
+		// i++;
+		//
+		// // Tab tab = entry.getValue();
+		// // do something with key and/or tab
+		// }
+		System.out.println();
+
+		for (int i = 0; i < hexgame.BSIZE; i++) {
+			for (int j = 0; j < hexgame.BSIZE; j++) {
+				System.out.print(hashMap.get(new Coordinate(i, j)).getValue());
+				System.out.print(" | ");
+			}
+			System.out.println();
+		}
+
+		System.out.println();
+		System.out.println();
 	}
 
 	public ArrayList<State> generateStates() {
 
+		ArrayList<State> states = new ArrayList<State>();
 
+		for (int i = 0; i < hexgame.BSIZE; i++) {
+			for (int j = 0; j < hexgame.BSIZE; j++) {
+
+				if (hashMap.get(new Coordinate(i, j)).getOwner() == ai) {
+					for (int k = 0; k < hexgame.BSIZE; k++) {
+						for (int l = 0; l < hexgame.BSIZE; l++) {
+							// 1. left diagonal up 2. left diag down 3. right
+							// diag
+							// up 4. rright diag down 5. horitzontal
+							if (hashMap.get(new Coordinate(k, l)).getOwner() == free) {
+
+								// nasa diagonal sya
+								if (i - k == j - l) {
+									for (int m = j; m > 0; m--) {
+										for (int n = k; n > 0; n--) {
+											if (hashMap.get(new Coordinate(m - 1, n - 1)).getOwner() == free) {
+												if (m - 2 <= 0 || n - 2 <= 0) {
+													for (int transfer = hashMap.get(new Coordinate(i, j)).getValue()
+															- 1; transfer > 0; transfer--) {
+
+														System.out.println("Transfer 1");
+
+														Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
+
+														for (Map.Entry<Coordinate, GuiCell> entry : hashMap
+																.entrySet()) {
+															Coordinate key = new Coordinate(entry.getKey());
+															GuiCell temp = new GuiCell(entry.getValue());
+															// Tab tab =
+															// entry.getValue();
+															// do something with
+															// key and/or tab
+															hashMap2.put(key, temp);
+														}
+
+														State newState = new State(new HashMap(hashMap2), this, player,
+																level + 1);
+
+														newState.getHashMap().get(new Coordinate(m - 1, n - 1))
+																.setOwner(ai);
+														newState.getHashMap().get(new Coordinate(m - 1, n - 1))
+																.setValue(transfer);
+														newState.getHashMap().get(new Coordinate(i, j))
+																.setValue(hashMap.get(new Coordinate(i, j)).getValue()
+																		- transfer);
+
+														states.add(newState);
+
+													}
+												} /*
+													 * else if (board[n - 2][m -
+													 * 2].getOwner() == player
+													 * || board[n - 2][n -
+													 * 2].getOwner() == ai) {
+													 * for (int transfer =
+													 * origValue - 1; transfer >
+													 * 0; transfer--) {
+													 * System.out.
+													 * println("Transfer 1");
+													 * 
+													 * GuiCell[][] tempBoard =
+													 * new
+													 * GuiCell[bSize][bSize];
+													 * 
+													 * for (int copyi = 0; copyi
+													 * < board.length; copyi++)
+													 * for (int copyj = 0; copyj
+													 * < board[copyi].length;
+													 * copyj++)
+													 * tempBoard[copyi][copyj] =
+													 * board[copyi][copyj];
+													 * 
+													 * tempBoard[m - 1][n - 1] =
+													 * new GuiCell(m - 1, n - 1,
+													 * transfer, ai);
+													 * tempBoard[i][j].setValue(
+													 * origValue - transfer);
+													 * 
+													 * State newState = new
+													 * State(tempBoard, this,
+													 * player, level + 1);
+													 * 
+													 * states.add(newState); } }
+													 */
+											}
+
+										}
+									}
+								}
+							}
+
+							// if (i - k == j - l || k - i == j - l || i - k ==
+							// l - j || k - i == l - j || i == k) {
+							//
+							// }
+
+						}
+
+					}
+
+				}
+
+			}
+
+		}
+
+		System.out.println(states.size());
+
+		for (int i = 0; i < states.size(); i++) {
+			states.get(i).print();
+		}
 		return states;
 
 	}

@@ -10,6 +10,12 @@ public class Coordinate {
 		this.y = y;
 	}
 
+	public Coordinate(Coordinate key) {
+		// TODO Auto-generated constructor stub
+		x = key.x;
+		y = key.y;
+	}
+
 	@Override
 	public int hashCode() {
 		int tmp = (y + ((x + 1) / 2));

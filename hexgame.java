@@ -120,7 +120,22 @@ public class hexgame {
 		// board[2][2] = 'C';
 		// board[3][2] = 'D';
 
-//		displayBoardConsole();
+		// displayBoardConsole();
+		Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
+		
+		
+		for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
+			Coordinate key = new Coordinate(entry.getKey());
+			GuiCell temp = new GuiCell(entry.getValue());
+			// Tab tab = entry.getValue();
+			// do something with key and/or tab
+			hashMap2.put(key, temp);
+		}
+		
+		
+		;
+		State state = new State(new HashMap(hashMap2), null, ai, 0);
+		state.generateStates();
 
 	}
 
@@ -149,7 +164,6 @@ public class hexgame {
 			// do something with key and/or tab
 		}
 
-
 	}
 
 	public void initializeSheeps() {
@@ -157,7 +171,17 @@ public class hexgame {
 		numberOfSheepsPerPlayer = Integer
 				.parseInt(JOptionPane.showInputDialog(null, "Total number of sheeps per player", "Welcome", 2));
 		lblSheepsPerPlayer.setText(Integer.toString(numberOfSheepsPerPlayer));
+		
+		initializeAISheeps();
 		initializePlayerSheeps();
+		updateBoard();
+
+	}
+	
+	public void initializeAISheeps(){
+		hashMap.put(new Coordinate(2, 2), new GuiCell(numberOfSheepsPerPlayer,	ai));
+
+
 	}
 
 	public void initializePlayerSheeps() {
@@ -168,10 +192,6 @@ public class hexgame {
 
 		hashMap.put(new Coordinate(initialX, initialY), new GuiCell(numberOfSheepsPerPlayer, player));
 
-		updateBoard();
-
-		// board[initialX][initialY] = new GuiCell(initialX, initialY,
-		// numberOfSheepsPerPlayer, player, true);
 	}
 
 	private void createAndShowGUI() {
@@ -309,18 +329,14 @@ public class hexgame {
 
 							lblSheepAtHand.setText(Integer.toString(holding));
 
-
-							System.out.println(	hashMap.get(new Coordinate(p.x, p.y)).getValue());
+							System.out.println(hashMap.get(new Coordinate(p.x, p.y)).getValue());
 							System.out.println("munis");
 							System.out.println(holding);
-						
+
 							hashMap.put(new Coordinate(p.x, p.y),
 									new GuiCell(hashMap.get(new Coordinate(p.x, p.y)).getValue() - holding, player));
-							
-							
 
 							updateBoard();
-
 						}
 
 					} else if ((board[p.x][p.y].getOwner() == player || board[p.x][p.y].getOwner() == ai)
@@ -332,17 +348,25 @@ public class hexgame {
 					}
 
 					else if (board[p.x][p.y].getOwner() == free && isHolding == true) {
+						int oldX = Integer.parseInt(lblxcoord.getText());
+						int oldY = Integer.parseInt(lblycoord.getText());
 
-						hashMap.replace(new Coordinate(p.x, p.y), new GuiCell(holding, player));
+						
 
-						isHolding = false;
-						holding = 0;
-						lblSheepAtHand.setText("none");
-						lblxcoord.setText("none");
-						lblycoord.setText("none");
-						updateBoard();
+						if (oldX - p.x == oldY - p.y || p.x - oldX == oldY - p.y || oldX - p.x == p.y - oldY
+								|| p.x - oldX == p.y - oldY || oldX == p.x) {
 
-						System.out.println("CANGED");
+							hashMap.replace(new Coordinate(p.x, p.y), new GuiCell(holding, player));
+
+							isHolding = false;
+							holding = 0;
+							lblSheepAtHand.setText("none");
+							lblxcoord.setText("none");
+							lblycoord.setText("none");
+							updateBoard();
+
+							System.out.println("CANGED");
+						}
 					}
 
 					else if (board[p.x][p.y].getOwner() == ai) {
@@ -358,10 +382,6 @@ public class hexgame {
 					// board[p.x + 1][p.y - 1] = "X";
 					// board[p.x + 2][p.y] = "X";
 					// }
-
-					else {
-						System.out.println("shit");
-					}
 
 				} catch (IndexOutOfBoundsException e1) {
 					System.out.println("caught exception at hexagon: " + p.x + " " + p.y + "value: " + board[p.x][p.y]);

@@ -18,6 +18,11 @@ public class GuiCell {
 	// this.legitCell = true;
 	// }
 
+	public GuiCell(GuiCell value2) {
+		value = value2.value;
+		owner = value2.owner;
+	}
+
 	public int getValue() {
 		return value;
 	}
