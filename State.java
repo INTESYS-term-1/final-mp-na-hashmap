@@ -203,6 +203,8 @@ public class State {
 					System.out.println("i: " + (i));
 					System.out.println("j: " + (j));
 
+					
+					//for left diagonal up
 					for (int k = i-1; k > 1; k--) {
 						System.out.println("k: " +k);
 						if (hashMap.get(new Coordinate(i - k, j - k)).getOwner() == free
@@ -236,6 +238,43 @@ public class State {
 							}
 						}
 					}
+					
+					//for right diagonal down
+					for (int k = 0; k+i < hexgame.BSIZE-1 && k+j < hexgame.BSIZE-1; k++) {
+						System.out.println("k: " +k);
+						if (hashMap.get(new Coordinate(i + k, j + k)).getOwner() == free
+								&& hashMap.get(new Coordinate(i + k + 1, j + k + 1)).getOwner() != free) {
+							System.out.println("loop");
+							for (int transfer = hashMap.get(new Coordinate(i, j)).getValue()
+									- 1; transfer > 0; transfer--) {
+
+								Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
+
+								for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
+									Coordinate key = new Coordinate(entry.getKey());
+									GuiCell temp = new GuiCell(entry.getValue());
+									// Tab tab =
+									// entry.getValue();
+									// do something
+									// with
+									// key and/or
+									// tab
+									hashMap2.put(key, temp);
+								}
+
+								State newState = new State(new HashMap(hashMap2), this, player, level + 1);
+
+								newState.getHashMap().get(new Coordinate(i + k, j + k)).setOwner(ai);
+								newState.getHashMap().get(new Coordinate(i + k, j + k)).setValue(transfer);
+								newState.getHashMap().get(new Coordinate(i, j))
+										.setValue(hashMap.get(new Coordinate(i, j)).getValue() - transfer);
+
+								states.add(newState);
+							}
+						}
+					}
+					
+					
 
 					// for (int k = 0; k < hexgame.BSIZE; k++) {
 					// for (int l = 0; l < hexgame.BSIZE; l++) {
