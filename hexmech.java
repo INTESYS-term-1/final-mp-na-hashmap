@@ -165,6 +165,14 @@ The hexagon is drawn in the colour specified in hexgame.COLOURELL.
 			g2.drawString(c, x+r+BORDERS, y+r+BORDERS+4); //FIXME: handle XYVertex
 			//g2.drawString(x+","+y, x+r+BORDERS, y+r+BORDERS+4);
 		}
+		else if(hexgame.board[i][j].getOwner() == -99){
+			g2.setColor(hexgame.COLOURFOUR);
+			g2.fillPolygon(hex(x,y));
+			g2.setColor(hexgame.COLOURFOURTXT);
+			c = n;
+			g2.drawString(c, x+r+BORDERS, y+r+BORDERS+4); //FIXME: handle XYVertex
+			//g2.drawString(x+","+y, x+r+BORDERS, y+r+BORDERS+4);
+		}
 		/*if (n > 0) {
 			g2.setColor(hexgame.COLOURTWO);
 			g2.fillPolygon(hex(x,y));
