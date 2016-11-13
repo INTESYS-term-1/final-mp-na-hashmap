@@ -214,10 +214,10 @@ public class State {
 					// System.out.println("i: " + (i));
 					// System.out.println("j: " + (j));
 
-					System.out.println("yes");
+					// System.out.println("yes");
 
-					for (int k = i - 1, l = j - 1; k > 1 && l > 1; k = k) {
-						System.out.println("k: " + k);
+					for (int k = i - 1, l = j - 1; k > 1 && l > 1; k = k + 1 - 1) {
+						System.out.println("K: " + k);
 
 						if (k % 2 == 1) {
 							if (hashMap.get(new Coordinate(k, l)).getOwner() == free
@@ -276,7 +276,6 @@ public class State {
 									System.out.println("newstate");
 
 								}
-
 								break;
 							} else {
 								k--;
@@ -286,8 +285,8 @@ public class State {
 							k--;
 
 						}
+						// System.out.println("K: " + k);
 
-						System.out.println("yaoko  na");
 					}
 				}
 
