@@ -1,4 +1,3 @@
-
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
@@ -13,9 +12,9 @@ import net.miginfocom.swing.MigLayout;
 /**********************************
  * This is the main class of a Java program to play a game based on hexagonal
  * tiles. The mechanism of handling hexes is in the file hexmech.java.
- * 
+ *
  * Written by: M.H. Date: December 2012
- * 
+ *
  ***********************************/
 
 public class hexgame {
@@ -55,9 +54,9 @@ public class hexgame {
 	final static int HEXSIZE = 75; // hex size in pixels
 	final static int BORDERS = 15;
 	final static int SCRSIZE = HEXSIZE * (BSIZE + 1) + BORDERS * 3; // screen
-																	// size
-																	// (vertical
-																	// dimension).
+	// size
+	// (vertical
+	// dimension).
 
 	// variables natin
 	JSplitPane splitPane;
@@ -67,10 +66,10 @@ public class hexgame {
 	Boolean isHolding = false;
 	int holding = 0;
 
-	int player = -1;
-	int free = 0;
-	int ai = 1;
-	int wall = -99;
+	static int player = -1;
+	static int free = 0;
+	static int ai = 1;
+	static int wall = -99;
 
 	Map<Coordinate, GuiCell> hashMap = new HashMap<Coordinate, GuiCell>();
 
@@ -90,7 +89,7 @@ public class hexgame {
 		hexmech.setXYasVertex(false); // RECOMMENDED: leave this as FALSE.
 
 		hexmech.setHeight(HEXSIZE); // Either setHeight or setSize must be run
-									// to initialize the hex
+		// to initialize the hex
 		hexmech.setBorders(BORDERS);
 
 		for (int i = 0; i < BSIZE; i++) {
@@ -163,14 +162,14 @@ public class hexgame {
 		State state = new State(new HashMap(hashMap2), null, ai, 0);
 		ArrayList<State> states = state.generateStates();
 
-		
-		
+
+
 //		System.out.println("----------------------------");
 //		for (int i = 0; i < states.size(); i++) {
 //			states.get(i).print();
 //		}
-		
-		hashMap = states.get(states.size()-1).getHashMap();
+
+//		hashMap = states.get(states.size()-1).getHashMap();
 		updateBoard();
 		// displayBoardConsole();
 	}
@@ -337,7 +336,7 @@ public class hexgame {
 		}
 
 		class MyMouseListener extends MouseAdapter { // inner class inside
-														// DrawingPanel
+			// DrawingPanel
 			public void mouseClicked(MouseEvent e) {
 				// mPt.x = x;
 				// mPt.y = y;
@@ -404,10 +403,12 @@ public class hexgame {
 					else if (board[p.x][p.y].getOwner() == free && isHolding == true) {
 						int oldX = Integer.parseInt(lblxcoord.getText());
 						int oldY = Integer.parseInt(lblycoord.getText());
+						Coordinate oldCoordinate = new Coordinate(oldX, oldY);
+						Coordinate newCoordinate = new Coordinate(p.x, p.y);
 
-						if (oldX - p.x == oldY - p.y || p.x - oldX == oldY - p.y || oldX - p.x == p.y - oldY
-								|| p.x - oldX == p.y - oldY || oldX == p.x) {
-
+						if ( isInRightDiagonal(oldCoordinate, newCoordinate)/*oldX - p.x == oldY - p.y || p.x - oldX == oldY - p.y || oldX - p.x == p.y - oldY
+								|| p.x - oldX == p.y - oldY || oldX == p.x*/) {
+							System.out.println("isInRight");
 							hashMap.replace(new Coordinate(p.x, p.y), new GuiCell(holding, player));
 
 							isHolding = false;
@@ -440,6 +441,45 @@ public class hexgame {
 				}
 
 				repaint();
+			}
+			private boolean isInRightDiagonal(Coordinate oldCoordinate, Coordinate newCoordinate){
+				int oldX = oldCoordinate.getX();
+				int oldY = oldCoordinate.getY();
+
+				while(hashMap.get(oldCoordinate).getOwner() != free){
+					if(newCoordinate.getX() < oldCoordinate.getX() || newCoordinate.getY() < oldCoordinate.getY()) {
+						System.out.println("less than");
+						if (oldCoordinate.getX() % 2 == 0) {
+							oldCoordinate.setX(oldCoordinate.getX() - 1);
+							oldCoordinate.setY(oldCoordinate.getY() - 1);
+
+							if (oldCoordinate == newCoordinate)
+								return true;
+							//System.out.println("X: " + oldCoordinate.getX() + "   Y: " + oldCoordinate.getY());
+						} else {
+							oldCoordinate.setX(oldCoordinate.getX() - 1);
+							if (oldCoordinate == newCoordinate)
+								return true;
+							//System.out.println("X: " + oldCoordinate.getX() + "   Y: " + oldCoordinate.getY());
+						}
+					}
+					if(newCoordinate.getX() > oldCoordinate.getX() || newCoordinate.getY() > oldCoordinate.getY()) {
+						System.out.println("greater than");
+						if (oldCoordinate.getX() % 2 == 0) {
+							oldCoordinate.setX(oldCoordinate.getX() + 1);
+							if (oldCoordinate == newCoordinate)
+								return true;
+						} else {
+							oldCoordinate.setX(oldCoordinate.getX() + 1);
+							oldCoordinate.setY(oldCoordinate.getY() + 1);
+							if (oldCoordinate == newCoordinate)
+								return true;
+						}
+					}
+				}
+				System.out.println("isNOTInRight");
+				return false;
+
 			}
 
 		} // end of MyMouseListener class
