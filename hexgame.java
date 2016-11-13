@@ -165,12 +165,14 @@ public class hexgame {
 
 		
 		
-//		System.out.println("----------------------------");
-//		for (int i = 0; i < states.size(); i++) {
-//			states.get(i).print();
-//		}
+		System.out.println("----------------------------");
+		for (int i = 0; i < states.size(); i++) {
+			states.get(i).print();
+		}
 		
 		hashMap = states.get(states.size()-1).getHashMap();
+		
+		System.out.println(states.size());
 		updateBoard();
 		// displayBoardConsole();
 	}
