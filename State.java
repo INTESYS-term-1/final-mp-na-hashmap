@@ -202,7 +202,8 @@ public class State {
 	}
 
 	public ArrayList<State> generateStates() {
-		int magicNumber = 1;
+		int magicNumberSlash = 1;
+		int magicNumberBackSlash = 0;
 
 		ArrayList<State> states = new ArrayList<State>();
 
@@ -211,14 +212,14 @@ public class State {
 
 				if (hashMap.get(new Coordinate(row, column)).getOwner() == ai) {
 
-					// left diagonal UP
+					// // left diagonal UP
 					if (row % 2 == 1) {
-						magicNumber = 0;
+						magicNumberSlash = 0;
 					} else if (row % 2 == 0) {
-						magicNumber = 1;
+						magicNumberSlash = 1;
 					}
 
-					for (int k = row - 1, l = column - magicNumber; k > 1 && l > 1; k = k + 1 - 1) {
+					for (int k = row - 1, l = column - magicNumberSlash; k > 0 && l > 0; k = k + 1 - 1) {
 
 						if (k % 2 == 1) {
 							if (hashMap.get(new Coordinate(k, l)).getOwner() == free
@@ -290,14 +291,14 @@ public class State {
 					}
 
 					if (row % 2 == 1) {
-						magicNumber = 1;
+						magicNumberSlash = 1;
 					} else if (row % 2 == 0) {
-						magicNumber = 0;
+						magicNumberSlash = 0;
 					}
 
 					// right diagonal down
-					for (int k = row + 1, l = column + magicNumber; k < hexgame.BSIZE
-							&& l < hexgame.BSIZE; k = k + 1 - 1) {
+					for (int k = row + 1, l = column + magicNumberSlash; k <= hexgame.BSIZE
+							&& l <= hexgame.BSIZE; k = k + 1 - 1) {
 
 						if (k % 2 == 1) {
 							if (hashMap.get(new Coordinate(k, l)).getOwner() == free
@@ -368,6 +369,170 @@ public class State {
 							k--;// di aabot dito
 						}
 					}
+
+					if (row % 2 == 1) {
+						magicNumberBackSlash = 0;
+					} else if (row % 2 == 0) {
+						magicNumberBackSlash = 1;
+					}
+
+					// right diagonal up
+					for (int k = row + 1, l = column - magicNumberBackSlash; k < hexgame.BSIZE
+							&& l < hexgame.BSIZE; k = k + 1 - 1) {
+
+						if (k % 2 == 1) {
+							if (hashMap.get(new Coordinate(k, l)).getOwner() == free
+									&& hashMap.get(new Coordinate(k + 1, l)).getOwner() != free) {
+								for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
+										- 1; transfer > 0; transfer--) {
+
+									Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
+
+									for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
+										Coordinate key = new Coordinate(entry.getKey());
+										GuiCell temp = new GuiCell(entry.getValue());
+
+										hashMap2.put(key, temp);
+									}
+
+									State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), this, player,
+											level + 1);
+
+									newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
+									newState.getHashMap().get(new Coordinate(k, l)).setValue(transfer);
+									newState.getHashMap().get(new Coordinate(row, column))
+											.setValue(hashMap.get(new Coordinate(row, column)).getValue() - transfer);
+
+									states.add(newState);
+									System.out.println("diagonal right down added");
+								}
+								break;
+
+							} else {
+								k++;
+
+							}
+						} else if (k % 2 == 0) {
+							if (hashMap.get(new Coordinate(k, l)).getOwner() == free
+									&& hashMap.get(new Coordinate(k + 1, l - 1)).getOwner() != free) {
+								for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
+										- 1; transfer > 0; transfer--) {
+
+									Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
+
+									for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
+										Coordinate key = new Coordinate(entry.getKey());
+										GuiCell temp = new GuiCell(entry.getValue());
+
+										hashMap2.put(key, temp);
+									}
+
+									State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), this, player,
+											level + 1);
+
+									newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
+									newState.getHashMap().get(new Coordinate(k, l)).setValue(transfer);
+									newState.getHashMap().get(new Coordinate(row, column))
+											.setValue(hashMap.get(new Coordinate(row, column)).getValue() - transfer);
+
+									states.add(newState);
+									System.out.println("diagonal right down added");
+
+								}
+								break;
+
+							} else {
+								k++;
+								l--;
+							}
+
+						} else {
+							k--;// di aabot dito
+						}
+					}
+
+					if (row % 2 == 1) {
+						magicNumberBackSlash = 1;
+					} else if (row % 2 == 0) {
+						magicNumberBackSlash = 0;
+					}
+
+					// left diagonal down
+					for (int k = row - 1, l = column + magicNumberBackSlash; k > 0
+							&& l < hexgame.BSIZE; k = k + 1 - 1) {
+
+						if (k % 2 == 1) {
+
+							if (hashMap.get(new Coordinate(k, l)).getOwner() == free
+									&& hashMap.get(new Coordinate(k - 1, l + 1)).getOwner() != free) {
+								for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
+										- 1; transfer > 0; transfer--) {
+
+									Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
+
+									for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
+										Coordinate key = new Coordinate(entry.getKey());
+										GuiCell temp = new GuiCell(entry.getValue());
+
+										hashMap2.put(key, temp);
+									}
+
+									State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), this, player,
+											level + 1);
+
+									newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
+									newState.getHashMap().get(new Coordinate(k, l)).setValue(transfer);
+									newState.getHashMap().get(new Coordinate(row, column))
+											.setValue(hashMap.get(new Coordinate(row, column)).getValue() - transfer);
+
+									states.add(newState);
+								}
+								break;
+
+							} else {
+								k--;
+								l++;
+
+							}
+						} else if (k % 2 == 0) {
+
+							if (hashMap.get(new Coordinate(k, l)).getOwner() == free
+									&& hashMap.get(new Coordinate(k - 1, l)).getOwner() != free) {
+
+								for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
+										- 1; transfer > 0; transfer--) {
+
+									Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
+
+									for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
+										Coordinate key = new Coordinate(entry.getKey());
+										GuiCell temp = new GuiCell(entry.getValue());
+
+										hashMap2.put(key, temp);
+									}
+
+									State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), this, player,
+											level + 1);
+
+									newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
+									newState.getHashMap().get(new Coordinate(k, l)).setValue(transfer);
+									newState.getHashMap().get(new Coordinate(row, column))
+											.setValue(hashMap.get(new Coordinate(row, column)).getValue() - transfer);
+
+									states.add(newState);
+
+								}
+								break;
+
+							} else {
+								k--;
+							}
+
+						} else {
+							k--;// di aabot dito
+						}
+					}
+
 				}
 
 			}
