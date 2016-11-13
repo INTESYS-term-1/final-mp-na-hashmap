@@ -163,16 +163,14 @@ public class hexgame {
 		State state = new State(new HashMap(hashMap2), null, ai, 0);
 		ArrayList<State> states = state.generateStates();
 
-		
-		
 		System.out.println("----------------------------");
 		for (int i = 0; i < states.size(); i++) {
 			states.get(i).print();
 		}
-		
-		hashMap = states.get(states.size()-1).getHashMap();
-		
-		System.out.println(states.size());
+
+		hashMap = states.get(states.size() - 1).getHashMap();
+
+		System.out.println("Size of state: " + states.size());
 		updateBoard();
 		// displayBoardConsole();
 	}
@@ -234,9 +232,8 @@ public class hexgame {
 	}
 
 	public void initializeAISheeps() {
-		hashMap.put(new Coordinate(6,5), new GuiCell(numberOfSheepsPerPlayer, ai));
-		hashMap.put(new Coordinate(1,2), new GuiCell(numberOfSheepsPerPlayer, ai));
-
+		hashMap.put(new Coordinate(6, 5), new GuiCell(numberOfSheepsPerPlayer, ai));
+		hashMap.put(new Coordinate(1, 2), new GuiCell(numberOfSheepsPerPlayer, ai));
 
 	}
 
@@ -330,7 +327,9 @@ public class hexgame {
 					// if (board[i][j] > 0) hexmech.fillHex(i,j,COLOURTWO,
 					// board[i][j],g2);
 
-					hexmech.fillHex(i, j, Integer.toString(board[i][j].getValue())+ " "+ Integer.toString(i) + Integer.toString(j), g2);
+					hexmech.fillHex(i, j,
+							Integer.toString(board[i][j].getValue()) + " " + Integer.toString(i) + Integer.toString(j),
+							g2);
 				}
 			}
 

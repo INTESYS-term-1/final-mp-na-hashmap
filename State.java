@@ -202,6 +202,7 @@ public class State {
 	}
 
 	public ArrayList<State> generateStates() {
+		int magicNumber = 1;
 
 		ArrayList<State> states = new ArrayList<State>();
 
@@ -210,14 +211,14 @@ public class State {
 
 				if (hashMap.get(new Coordinate(row, column)).getOwner() == ai) {
 
-					
-					int decrementor = 1;
-					//left diagonal UP
-					if(row%2==1){
-						decrementor = 0;
+					// left diagonal UP
+					if (row % 2 == 1) {
+						magicNumber = 0;
+					} else if (row % 2 == 0) {
+						magicNumber = 1;
 					}
-				
-					for (int k = row - 1, l = column - decrementor; k > 1 && l > 1; k = k + 1 - 1) {
+
+					for (int k = row - 1, l = column - magicNumber; k > 1 && l > 1; k = k + 1 - 1) {
 
 						if (k % 2 == 1) {
 							if (hashMap.get(new Coordinate(k, l)).getOwner() == free
@@ -243,10 +244,9 @@ public class State {
 											.setValue(hashMap.get(new Coordinate(row, column)).getValue() - transfer);
 
 									states.add(newState);
-									System.out.println("newstate");
+									System.out.println("diagonal left up added");
 								}
-								return states;
-
+								break;
 							} else {
 								k--;
 							}
@@ -274,27 +274,34 @@ public class State {
 											.setValue(hashMap.get(new Coordinate(row, column)).getValue() - transfer);
 
 									states.add(newState);
-									System.out.println("newstate");
+									System.out.println("diagonal left up added");
 
 								}
-								return states;
+								break;
+
 							} else {
 								k--;
 								l--;
 							}
+
 						} else {
 							k--;
 						}
 					}
-					
-					
-					
-				/*	//right diagonal down
-					for (int k = row + 1, l = column + 1; k < hexgame.BSIZE && l < hexgame.BSIZE; k = k + 1 - 1) {
+
+					if (row % 2 == 1) {
+						magicNumber = 1;
+					} else if (row % 2 == 0) {
+						magicNumber = 0;
+					}
+
+					// right diagonal down
+					for (int k = row + 1, l = column + magicNumber; k < hexgame.BSIZE
+							&& l < hexgame.BSIZE; k = k + 1 - 1) {
 
 						if (k % 2 == 1) {
 							if (hashMap.get(new Coordinate(k, l)).getOwner() == free
-									&& hashMap.get(new Coordinate(k - 1, l)).getOwner() != free) {
+									&& hashMap.get(new Coordinate(k + 1, l + 1)).getOwner() != free) {
 								for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
 										- 1; transfer > 0; transfer--) {
 
@@ -316,16 +323,17 @@ public class State {
 											.setValue(hashMap.get(new Coordinate(row, column)).getValue() - transfer);
 
 									states.add(newState);
-									System.out.println("newstate");
+									System.out.println("diagonal right down added");
 								}
-								return states;
+								break;
 
 							} else {
-								k--;
+								k++;
+								l++;
 							}
 						} else if (k % 2 == 0) {
 							if (hashMap.get(new Coordinate(k, l)).getOwner() == free
-									&& hashMap.get(new Coordinate(k - 1, l - 1)).getOwner() != free) {
+									&& hashMap.get(new Coordinate(k + 1, l)).getOwner() != free) {
 								for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
 										- 1; transfer > 0; transfer--) {
 
@@ -347,18 +355,19 @@ public class State {
 											.setValue(hashMap.get(new Coordinate(row, column)).getValue() - transfer);
 
 									states.add(newState);
-									System.out.println("newstate");
+									System.out.println("diagonal right down added");
 
 								}
-								return states;
+								break;
+
 							} else {
-								k--;
-								l--;
+								k++;
 							}
+
 						} else {
-							k--;
+							k--;// di aabot dito
 						}
-					}*/
+					}
 				}
 
 			}
@@ -368,7 +377,6 @@ public class State {
 		}
 
 		System.out.println(states.size());
-
 		for (int i = 0; i < states.size(); i++) {
 			states.get(i).print();
 		}
