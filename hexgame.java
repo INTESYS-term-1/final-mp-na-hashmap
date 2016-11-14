@@ -463,7 +463,7 @@ public class hexgame {
 							//System.out.println("X: " + oldCoordinate.getX() + "   Y: " + oldCoordinate.getY());
 						}
 					}
-					if(newCoordinate.getX() > oldCoordinate.getX() || newCoordinate.getY() > oldCoordinate.getY()) {
+					else if(newCoordinate.getX() > oldCoordinate.getX() || newCoordinate.getY() > oldCoordinate.getY()) {
 						System.out.println("greater than");
 						if (oldCoordinate.getX() % 2 == 0) {
 							oldCoordinate.setX(oldCoordinate.getX() + 1);
