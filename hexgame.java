@@ -408,7 +408,6 @@ public class hexgame {
 							oldPoint.setX(oldPoint.getX()-1);
 							oldPoint.setY(oldPoint.getY()+1);
 						}
-						System.out.println(oldPoint.getX() + " " + oldPoint.getY() + "-> " + newPoint.getX() + " " + newPoint.getY());
 						if(oldPoint.equals(newPoint))
 							return true;
 						if(!hashMap.containsKey(oldPoint))
@@ -416,7 +415,6 @@ public class hexgame {
 					}while (hashMap.get(oldPoint).getOwner() == free);
 //				}
 				JOptionPane.showMessageDialog(null, "Can't place sheep there.");
-				System.out.println("Can't Place there.");
 				return false;
 			}
 			public void mouseClicked(MouseEvent e) {
