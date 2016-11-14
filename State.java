@@ -222,7 +222,9 @@ public class State {
 					for (int k = row - 1, l = column - magicNumberSlash; k > 0 && l > 0; k = k + 1 - 1) {
 
 						if (k % 2 == 1) {
-							if (hashMap.get(new Coordinate(k, l)).getOwner() == free
+							if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
+								break;
+							} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
 									&& hashMap.get(new Coordinate(k - 1, l)).getOwner() != free) {
 								for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
 										- 1; transfer > 0; transfer--) {
@@ -252,7 +254,9 @@ public class State {
 								k--;
 							}
 						} else if (k % 2 == 0) {
-							if (hashMap.get(new Coordinate(k, l)).getOwner() == free
+							if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
+								break;
+							} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
 									&& hashMap.get(new Coordinate(k - 1, l - 1)).getOwner() != free) {
 								for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
 										- 1; transfer > 0; transfer--) {
@@ -302,7 +306,9 @@ public class State {
 							magicNumberSlash; k <= hexgame.BSIZE && l <= hexgame.BSIZE; k = k + 1 - 1) {
 
 						if (k % 2 == 1) {
-							if (hashMap.get(new Coordinate(k, l)).getOwner() == free
+							if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
+								break;
+							} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
 									&& hashMap.get(new Coordinate(k + 1, l + 1)).getOwner() != free) {
 								for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
 										- 1; transfer > 0; transfer--) {
@@ -334,7 +340,9 @@ public class State {
 								l++;
 							}
 						} else if (k % 2 == 0) {
-							if (hashMap.get(new Coordinate(k, l)).getOwner() == free
+							if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
+								break;
+							} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
 									&& hashMap.get(new Coordinate(k + 1, l)).getOwner() != free) {
 								for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
 										- 1; transfer > 0; transfer--) {
@@ -381,6 +389,9 @@ public class State {
 					// right diagonal up
 					for (int k = row + 1, l = column - magicNumberBackSlash; k < hexgame.BSIZE
 							&& l < hexgame.BSIZE; k = k + 1 - 1) {
+						if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
+							break;
+						} else
 
 						if (k % 2 == 1) {
 							if (hashMap.get(new Coordinate(k, l)).getOwner() == free
@@ -415,7 +426,9 @@ public class State {
 
 							}
 						} else if (k % 2 == 0) {
-							if (hashMap.get(new Coordinate(k, l)).getOwner() == free
+							if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
+								break;
+							} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
 									&& hashMap.get(new Coordinate(k + 1, l - 1)).getOwner() != free) {
 								for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
 										- 1; transfer > 0; transfer--) {
@@ -464,8 +477,9 @@ public class State {
 							&& l < hexgame.BSIZE; k = k + 1 - 1) {
 
 						if (k % 2 == 1) {
-
-							if (hashMap.get(new Coordinate(k, l)).getOwner() == free
+							if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
+								break;
+							} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
 									&& hashMap.get(new Coordinate(k - 1, l + 1)).getOwner() != free) {
 								for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
 										- 1; transfer > 0; transfer--) {
@@ -497,8 +511,9 @@ public class State {
 
 							}
 						} else if (k % 2 == 0) {
-
-							if (hashMap.get(new Coordinate(k, l)).getOwner() == free
+							if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
+								break;
+							} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
 									&& hashMap.get(new Coordinate(k - 1, l)).getOwner() != free) {
 
 								for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
@@ -537,8 +552,9 @@ public class State {
 
 					// vertical up
 					for (int k = row, l = column - 1; l > 0; k = k + 1 - 1) {
-
-						if (hashMap.get(new Coordinate(k, l)).getOwner() == free
+						if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
+							break;
+						} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
 								&& hashMap.get(new Coordinate(k, l - 1)).getOwner() != free) {
 							for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
 									- 1; transfer > 0; transfer--) {
@@ -573,8 +589,9 @@ public class State {
 
 					// vertical down
 					for (int k = row, l = column + 1; l < hexgame.BSIZE; k = k + 1 - 1) {
-
-						if (hashMap.get(new Coordinate(k, l)).getOwner() == free
+						if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
+							break;
+						} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
 								&& hashMap.get(new Coordinate(k, l + 1)).getOwner() != free) {
 							for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
 									- 1; transfer > 0; transfer--) {

@@ -233,6 +233,7 @@ public class hexgame {
 
 	public void initializeAISheeps() {
 		hashMap.put(new Coordinate(4, 4), new GuiCell(numberOfSheepsPerPlayer, ai));
+		
 //		hashMap.put(new Coordinate(4, 2), new GuiCell(numberOfSheepsPerPlayer, ai));
 
 	}
@@ -406,8 +407,8 @@ public class hexgame {
 						int oldX = Integer.parseInt(lblxcoord.getText());
 						int oldY = Integer.parseInt(lblycoord.getText());
 
-						if (oldX - p.x == oldY - p.y || p.x - oldX == oldY - p.y || oldX - p.x == p.y - oldY
-								|| p.x - oldX == p.y - oldY || oldX == p.x) {
+//						if (oldX - p.x == oldY - p.y || p.x - oldX == oldY - p.y || oldX - p.x == p.y - oldY
+//								|| p.x - oldX == p.y - oldY || oldX == p.x) {
 
 							hashMap.replace(new Coordinate(p.x, p.y), new GuiCell(holding, player));
 
@@ -419,7 +420,7 @@ public class hexgame {
 							updateBoard();
 
 							System.out.println("CANGED");
-						}
+//						}
 					}
 
 					else if (board[p.x][p.y].getOwner() == ai) {
