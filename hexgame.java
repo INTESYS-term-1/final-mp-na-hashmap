@@ -337,6 +337,88 @@ public class hexgame {
 
 		class MyMouseListener extends MouseAdapter { // inner class inside
 			// DrawingPanel
+														// DrawingPanel
+			private boolean validPlace(Coordinate old, Coordinate newPoint){
+				Coordinate oldPoint = new Coordinate(old.getX(), old.getY());
+					oldPoint = new Coordinate(old.getX(), old.getY());
+					do{ // down
+						oldPoint.setY(oldPoint.getY()+1);
+						if(oldPoint.equals(newPoint))
+							return true;
+						if(!hashMap.containsKey(oldPoint))
+							break;
+					}while(hashMap.get(oldPoint).getOwner() == free);
+					oldPoint = new Coordinate(old.getX(), old.getY());
+					do{//lower right diagonal
+						if(oldPoint.getX()%2==0){// old x cell even thus:
+							oldPoint.setX(oldPoint.getX()+1);
+						}
+						else{// if old x cell is odd then:
+							oldPoint.setX(oldPoint.getX()+1);
+							oldPoint.setY(oldPoint.getY()+1);
+						}
+						if(oldPoint.equals(newPoint))
+							return true;
+						if(!hashMap.containsKey(oldPoint))
+							break;
+					}while(hashMap.get(oldPoint).getOwner() ==  free);
+					oldPoint = new Coordinate(old.getX(), old.getY());
+					do{//upper right diagonal
+						if(oldPoint.getX()%2==0){
+							oldPoint.setX(oldPoint.getX()+1);
+							oldPoint.setY(oldPoint.getY()-1);
+						}
+						else{
+							oldPoint.setX(oldPoint.getX()+1);
+						}
+						if(oldPoint.equals(newPoint))
+							return true;
+						if(!hashMap.containsKey(oldPoint))
+							break;
+					}while(hashMap.get(oldPoint).getOwner() ==  free);
+					oldPoint = new Coordinate(old.getX(), old.getY());
+					do{// going up
+						oldPoint.setY(oldPoint.getY()-1);
+						if(oldPoint.equals(newPoint))
+							return true;
+						if(!hashMap.containsKey(oldPoint))
+							break;
+					}while(hashMap.get(oldPoint).getOwner() ==  free);
+					oldPoint = new Coordinate(old.getX(), old.getY());
+					do{// upper left diagonal
+						if(oldPoint.getX()%2==0){
+							oldPoint.setX(oldPoint.getX()-1);
+							oldPoint.setY(oldPoint.getY()-1);
+						}
+						else{
+							oldPoint.setX(oldPoint.getX()-1);
+						}
+						if(oldPoint.equals(newPoint)){
+							return true;
+						}
+						if(!hashMap.containsKey(oldPoint))
+							break;
+					}while(hashMap.get(oldPoint).getOwner() ==  free);
+					oldPoint = new Coordinate(old.getX(), old.getY());
+					do {// lower left diagonal
+						if(oldPoint.getX()%2==0){
+							oldPoint.setX(oldPoint.getX()-1);
+						}
+						else{
+							oldPoint.setX(oldPoint.getX()-1);
+							oldPoint.setY(oldPoint.getY()+1);
+						}
+						System.out.println(oldPoint.getX() + " " + oldPoint.getY() + "-> " + newPoint.getX() + " " + newPoint.getY());
+						if(oldPoint.equals(newPoint))
+							return true;
+						if(!hashMap.containsKey(oldPoint))
+							break;
+					}while (hashMap.get(oldPoint).getOwner() == free);
+//				}
+				JOptionPane.showMessageDialog(null, "Can't place sheep there.");
+				System.out.println("Can't Place there.");
+				return false;
+			}
 			public void mouseClicked(MouseEvent e) {
 				// mPt.x = x;
 				// mPt.y = y;
@@ -403,12 +485,11 @@ public class hexgame {
 					else if (board[p.x][p.y].getOwner() == free && isHolding == true) {
 						int oldX = Integer.parseInt(lblxcoord.getText());
 						int oldY = Integer.parseInt(lblycoord.getText());
-						Coordinate oldCoordinate = new Coordinate(oldX, oldY);
-						Coordinate newCoordinate = new Coordinate(p.x, p.y);
-
-						if ( isInRightDiagonal(oldCoordinate, newCoordinate)/*oldX - p.x == oldY - p.y || p.x - oldX == oldY - p.y || oldX - p.x == p.y - oldY
+						Coordinate oldCoordinate =  new Coordinate(oldX, oldY);
+						Coordinate newCoordinate =  new Coordinate(p.x, p.y);
+						if (validPlace(oldCoordinate, newCoordinate)/*oldX - p.x == oldY - p.y || p.x - oldX == oldY - p.y || oldX - p.x == p.y - oldY
 								|| p.x - oldX == p.y - oldY || oldX == p.x*/) {
-							System.out.println("isInRight");
+
 							hashMap.replace(new Coordinate(p.x, p.y), new GuiCell(holding, player));
 
 							isHolding = false;
@@ -442,45 +523,7 @@ public class hexgame {
 
 				repaint();
 			}
-			private boolean isInRightDiagonal(Coordinate oldCoordinate, Coordinate newCoordinate){
-				int oldX = oldCoordinate.getX();
-				int oldY = oldCoordinate.getY();
 
-				while(hashMap.get(oldCoordinate).getOwner() != free){
-					if(newCoordinate.getX() < oldCoordinate.getX() || newCoordinate.getY() < oldCoordinate.getY()) {
-						System.out.println("less than");
-						if (oldCoordinate.getX() % 2 == 0) {
-							oldCoordinate.setX(oldCoordinate.getX() - 1);
-							oldCoordinate.setY(oldCoordinate.getY() - 1);
-
-							if (oldCoordinate == newCoordinate)
-								return true;
-							//System.out.println("X: " + oldCoordinate.getX() + "   Y: " + oldCoordinate.getY());
-						} else {
-							oldCoordinate.setX(oldCoordinate.getX() - 1);
-							if (oldCoordinate == newCoordinate)
-								return true;
-							//System.out.println("X: " + oldCoordinate.getX() + "   Y: " + oldCoordinate.getY());
-						}
-					}
-					else if(newCoordinate.getX() > oldCoordinate.getX() || newCoordinate.getY() > oldCoordinate.getY()) {
-						System.out.println("greater than");
-						if (oldCoordinate.getX() % 2 == 0) {
-							oldCoordinate.setX(oldCoordinate.getX() + 1);
-							if (oldCoordinate == newCoordinate)
-								return true;
-						} else {
-							oldCoordinate.setX(oldCoordinate.getX() + 1);
-							oldCoordinate.setY(oldCoordinate.getY() + 1);
-							if (oldCoordinate == newCoordinate)
-								return true;
-						}
-					}
-				}
-				System.out.println("isNOTInRight");
-				return false;
-
-			}
 
 		} // end of MyMouseListener class
 	} // end of DrawingPanel class
