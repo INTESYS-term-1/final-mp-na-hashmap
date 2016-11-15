@@ -95,8 +95,8 @@ public class State {
 			sum = 1;
 		}
 
-		System.out.println("Eto sum bes: " + score);
 		score= sum;
+		
 		childrenLeft = level;
 		propagateScore();
 	}
@@ -131,11 +131,15 @@ public class State {
 	}
 
 	public void submit(State s) {
+		System.out.println("-------------------------------");
 		if (currentTurn == player) {
 			score = Math.min(score, s.getScore());
 		} else {
 			score = Math.max(score, s.getScore());
 		}
+		
+		System.out.println("Eto sum bes: " + score);
+
 		childrenLeft--;
 		propagateScore();
 	}
