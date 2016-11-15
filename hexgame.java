@@ -149,30 +149,9 @@ public class hexgame {
 		// board[3][2] = 'D';
 
 		// displayBoardConsole();
-		Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
 
-		for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
-			Coordinate key = new Coordinate(entry.getKey());
-			GuiCell temp = new GuiCell(entry.getValue());
-			// Tab tab = entry.getValue();
-			// do something with key and/or tab
-			hashMap2.put(key, temp);
-		}
-
-		;
-		State state = new State(new HashMap(hashMap2), null, ai, 0);
-		ArrayList<State> states = state.generateStates();
-
-		System.out.println("----------------------------");
-		for (int i = 0; i < states.size(); i++) {
-			states.get(i).print();
-		}
-
-		hashMap = states.get(states.size() - 1).getHashMap();
-
-		System.out.println("Size of state: " + states.size());
-		updateBoard();
 		// displayBoardConsole();
+
 	}
 
 	public void displayBoardConsole() {
@@ -233,8 +212,22 @@ public class hexgame {
 
 	public void initializeAISheeps() {
 		hashMap.put(new Coordinate(4, 4), new GuiCell(numberOfSheepsPerPlayer, ai));
-		
-//		hashMap.put(new Coordinate(4, 2), new GuiCell(numberOfSheepsPerPlayer, ai));
+		// hashMap.put(new Coordinate(4, 1), new
+		// GuiCell(numberOfSheepsPerPlayer, ai));
+		//
+		// hashMap.put(new Coordinate(4, 2), new
+		// GuiCell(numberOfSheepsPerPlayer, ai));
+		//
+		// hashMap.put(new Coordinate(4, 3), new
+		// GuiCell(numberOfSheepsPerPlayer, ai));
+		//
+		// hashMap.put(new Coordinate(4, 5), new
+		// GuiCell(numberOfSheepsPerPlayer, ai));
+		// hashMap.put(new Coordinate(4, 6), new
+		// GuiCell(numberOfSheepsPerPlayer, ai));
+
+		// hashMap.put(new Coordinate(4, 2), new
+		// GuiCell(numberOfSheepsPerPlayer, ai));
 
 	}
 
@@ -279,12 +272,6 @@ public class hexgame {
 		lblSheepsPerPlaye.add(btnDone, "cell 0 9,alignx center");
 		splitPane.setDividerLocation(550);
 
-		btnDone.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				System.out.println("click");
-			}
-		});
-
 		Container content = frame.getContentPane();
 		content.add(splitPane);
 		// this.add(panel); -- cannot be done in a static context
@@ -295,6 +282,75 @@ public class hexgame {
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
+
+		btnDone.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.out.println("click");
+				Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
+
+				for (int i = 0; i < BSIZE; i++) {
+					for (int j = 0; j < BSIZE; j++) {
+						if (board[i][j].getOwner() == player) {
+							GuiCell guiCell = new GuiCell(board[i][j].getValue(), player);
+							Coordinate coordinate = new Coordinate(i, j);
+							hashMap2.put(coordinate, guiCell);
+						}
+						if (board[i][j].getOwner() == ai) {
+							GuiCell guiCell = new GuiCell(board[i][j].getValue(), ai);
+							Coordinate coordinate = new Coordinate(i, j);
+							hashMap2.put(coordinate, guiCell);
+						} 
+						
+						if (board[i][j].getOwner() == wall) {
+							GuiCell guiCell = new GuiCell(board[i][j].getValue(), wall);
+							Coordinate coordinate = new Coordinate(i, j);
+							hashMap2.put(coordinate, guiCell);
+						} 
+						if (board[i][j].getOwner() == free) {
+							GuiCell guiCell = new GuiCell(0, free);
+							Coordinate coordinate = new Coordinate(i, j);
+							hashMap2.put(coordinate, guiCell);
+						} 
+					}
+				}
+//
+//				for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
+//					Coordinate key = new Coordinate(entry.getKey());
+//					GuiCell temp = new GuiCell(entry.getValue());
+//					// Tab tab = entry.getValue();
+//					// do something with key and/or tab
+//					hashMap2.put(key, temp);
+//				}
+
+				State state = new State(new HashMap<Coordinate, GuiCell>(hashMap2), null, ai, 0);
+				ArrayList<State> states = new ArrayList<>(state.generateStates());
+
+				// System.out.println("----------------------------");
+				// for (int i = 0; i < states.size(); i++) {
+				// states.get(i).print();
+				// }
+
+				// hashMap = new HashMap<Coordinate,
+				// GuiCell>(states.get(states.size()-1).getHashMap());
+
+				hashMap = new HashMap<Coordinate, GuiCell>(states.get(0).hashMap);
+
+//				for (Map.Entry<Coordinate, GuiCell> entry : states.get(states.size() - 1).getHashMap().entrySet()) {
+//					Coordinate key = new Coordinate(entry.getKey());
+//					GuiCell temp = new GuiCell(entry.getValue());
+//					// Tab tab = entry.getValue();
+//					// do something with key and/or tab
+//					hashMap.put(key, temp);
+//				}
+
+				System.out.println("Size of state: " + states.size());
+				updateBoard();
+
+				// DrawingPanel panel = new DrawingPanel();
+
+//				createAndShowGUI();
+			}
+		});
 
 	}
 
@@ -407,20 +463,21 @@ public class hexgame {
 						int oldX = Integer.parseInt(lblxcoord.getText());
 						int oldY = Integer.parseInt(lblycoord.getText());
 
-//						if (oldX - p.x == oldY - p.y || p.x - oldX == oldY - p.y || oldX - p.x == p.y - oldY
-//								|| p.x - oldX == p.y - oldY || oldX == p.x) {
+						// if (oldX - p.x == oldY - p.y || p.x - oldX == oldY -
+						// p.y || oldX - p.x == p.y - oldY
+						// || p.x - oldX == p.y - oldY || oldX == p.x) {
 
-							hashMap.replace(new Coordinate(p.x, p.y), new GuiCell(holding, player));
+						hashMap.replace(new Coordinate(p.x, p.y), new GuiCell(holding, player));
 
-							isHolding = false;
-							holding = 0;
-							lblSheepAtHand.setText("none");
-							lblxcoord.setText("none");
-							lblycoord.setText("none");
-							updateBoard();
+						isHolding = false;
+						holding = 0;
+						lblSheepAtHand.setText("none");
+						lblxcoord.setText("none");
+						lblycoord.setText("none");
+						updateBoard();
 
-							System.out.println("CANGED");
-//						}
+						System.out.println("CANGED");
+						// }
 					}
 
 					else if (board[p.x][p.y].getOwner() == ai) {

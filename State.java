@@ -30,7 +30,8 @@ public class State {
 	ArrayList<State> statesTemp = new ArrayList<State>();
 
 	public State(Map<Coordinate, GuiCell> hashMap, State parent, int nextTurn, int level) {
-		this.hashMap = hashMap;
+
+		this.hashMap = new HashMap(hashMap);
 		this.parentState = parent;
 		this.currentTurn = nextTurn;
 		this.level = level;
@@ -247,7 +248,6 @@ public class State {
 											.setValue(hashMap.get(new Coordinate(row, column)).getValue() - transfer);
 
 									states.add(newState);
-									System.out.println("diagonal left up added");
 								}
 								break;
 							} else {
@@ -279,7 +279,6 @@ public class State {
 											.setValue(hashMap.get(new Coordinate(row, column)).getValue() - transfer);
 
 									states.add(newState);
-									System.out.println("diagonal left up added");
 
 								}
 								break;
@@ -292,7 +291,7 @@ public class State {
 						} else {
 							k--;
 						}
-					}
+					} // end of left diagonal up
 
 					if (row % 2 == 1) {
 						magicNumberSlash = 1;
@@ -303,7 +302,7 @@ public class State {
 					// right diagonal down
 					for (int k = row + 1, l = column +
 
-							magicNumberSlash; k <= hexgame.BSIZE && l <= hexgame.BSIZE; k = k + 1 - 1) {
+							magicNumberSlash; k < hexgame.BSIZE && l < hexgame.BSIZE; k = k + 1 - 1) {
 
 						if (k % 2 == 1) {
 							if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
@@ -331,7 +330,6 @@ public class State {
 											.setValue(hashMap.get(new Coordinate(row, column)).getValue() - transfer);
 
 									states.add(newState);
-									System.out.println("diagonal right down added");
 								}
 								break;
 
@@ -365,7 +363,6 @@ public class State {
 											.setValue(hashMap.get(new Coordinate(row, column)).getValue() - transfer);
 
 									states.add(newState);
-									System.out.println("diagonal right down added");
 
 								}
 								break;
@@ -374,11 +371,8 @@ public class State {
 								k++;
 							}
 
-						} else {
-							k--;// di aabot dito
-
 						}
-					}
+					} // right diagonal down
 
 					if (row % 2 == 1) {
 						magicNumberBackSlash = 0;
@@ -388,7 +382,7 @@ public class State {
 
 					// right diagonal up
 					for (int k = row + 1, l = column - magicNumberBackSlash; k < hexgame.BSIZE
-							&& l < hexgame.BSIZE; k = k + 1 - 1) {
+							&& l > 0; k = k + 1 - 1) {
 						if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
 							break;
 						} else
@@ -417,7 +411,6 @@ public class State {
 											.setValue(hashMap.get(new Coordinate(row, column)).getValue() - transfer);
 
 									states.add(newState);
-									System.out.println("diagonal right down added");
 								}
 								break;
 
@@ -451,8 +444,6 @@ public class State {
 											.setValue(hashMap.get(new Coordinate(row, column)).getValue() - transfer);
 
 									states.add(newState);
-									System.out.println("diagonal right down added");
-
 								}
 								break;
 
@@ -461,10 +452,8 @@ public class State {
 								l--;
 							}
 
-						} else {
-							k--;// di aabot dito
 						}
-					}
+					} // right diagonal up
 
 					if (row % 2 == 1) {
 						magicNumberBackSlash = 1;
@@ -545,10 +534,8 @@ public class State {
 								k--;
 							}
 
-						} else {
-							k--;// di aabot dito
 						}
-					}
+					} // left diagonal down
 
 					// vertical up
 					for (int k = row, l = column - 1; l > 0; k = k + 1 - 1) {
@@ -585,10 +572,11 @@ public class State {
 
 						}
 
-					}
+					} // end of vertical up
 
 					// vertical down
 					for (int k = row, l = column + 1; l < hexgame.BSIZE; k = k + 1 - 1) {
+
 						if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
 							break;
 						} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
@@ -621,22 +609,13 @@ public class State {
 							l++;
 						}
 
-					}
+					} // vertical down
 
-				}
+				} // if loop kung AI hex sya
 
-			}
-			System.out.println("Row: " + row);
-			System.out.println("loop");
+			} // for loop j closing
+		} // for loop i closing
 
-		}
-
-		System.out.println(states.size());
-		for (
-
-				int i = 0; i < states.size(); i++) {
-			states.get(i).print();
-		}
 		return states;
 
 	}
