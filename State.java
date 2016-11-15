@@ -84,6 +84,25 @@ public class State {
 	public void computeScore() {
 
 		int sum = 0;
+
+		System.out.println("Compute score eto: ");
+		System.out.println("AI: " +aiScore());
+		System.out.println("PLayer: " + playerScore());
+		if (aiScore() < playerScore()) {
+			sum = aiScore();
+		}
+		else{
+			sum = 1;
+		}
+
+		System.out.println("Eto sum bes: " + score);
+		score= sum;
+		childrenLeft = level;
+		propagateScore();
+	}
+
+	public int aiScore() {
+		int sum = 0;
 		for (int i = 0; i < hexgame.BSIZE; i++) {
 			for (int j = 0; j < hexgame.BSIZE; j++) {
 				if (hashMap.get(new Coordinate(i, j)).getOwner() == ai) {
@@ -91,10 +110,19 @@ public class State {
 				}
 			}
 		}
+		return sum;
+	}
 
-		this.score = sum;
-		System.out.println("Eto sum bes: " + score);
-		propagateScore();
+	public int playerScore() {
+		int sum = 0;
+		for (int i = 0; i < hexgame.BSIZE; i++) {
+			for (int j = 0; j < hexgame.BSIZE; j++) {
+				if (hashMap.get(new Coordinate(i, j)).getOwner() == player) {
+					sum++;
+				}
+			}
+		}
+		return sum;
 	}
 
 	public void propagateScore() {
@@ -104,7 +132,7 @@ public class State {
 
 	public void submit(State s) {
 		if (currentTurn == player) {
-			score = Math.max(score, s.getScore());
+			score = Math.min(score, s.getScore());
 		} else {
 			score = Math.max(score, s.getScore());
 		}
@@ -166,107 +194,343 @@ public class State {
 
 		ArrayList<State> states = new ArrayList<State>();
 
-		for (int row = 0; row < hexgame.BSIZE; row++) {
-			for (int column = 0; column < hexgame.BSIZE; column++) {
+		if (currentTurn == ai) {
 
-				if (hashMap.get(new Coordinate(row, column)).getOwner() == ai) {
+			for (int row = 0; row < hexgame.BSIZE; row++) {
+				for (int column = 0; column < hexgame.BSIZE; column++) {
 
-					// // left diagonal UP
-					if (row % 2 == 1) {
-						magicNumberSlash = 0;
-					} else if (row % 2 == 0) {
-						magicNumberSlash = 1;
-					}
+					if (hashMap.get(new Coordinate(row, column)).getOwner() == ai) {
 
-					for (int k = row - 1, l = column - magicNumberSlash; k > 0 && l > 0; k = k + 1 - 1) {
-
-						if (k % 2 == 1) {
-							if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
-								break;
-							} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
-									&& hashMap.get(new Coordinate(k - 1, l)).getOwner() != free) {
-								for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
-										- 1; transfer > 0; transfer--) {
-
-									Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
-
-									for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
-										Coordinate key = new Coordinate(entry.getKey());
-										GuiCell temp = new GuiCell(entry.getValue());
-
-										hashMap2.put(key, temp);
-									}
-
-									State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), this, player,
-											level + 1);
-
-									newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
-									newState.getHashMap().get(new Coordinate(k, l)).setValue(transfer);
-									newState.getHashMap().get(new Coordinate(row, column))
-											.setValue(hashMap.get(new Coordinate(row, column)).getValue() - transfer);
-
-									states.add(newState);
-								}
-								break;
-							} else {
-								k--;
-							}
-						} else if (k % 2 == 0) {
-							if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
-								break;
-							} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
-									&& hashMap.get(new Coordinate(k - 1, l - 1)).getOwner() != free) {
-								for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
-										- 1; transfer > 0; transfer--) {
-
-									Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
-
-									for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
-										Coordinate key = new Coordinate(entry.getKey());
-										GuiCell temp = new GuiCell(entry.getValue());
-
-										hashMap2.put(key, temp);
-									}
-
-									State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), this, player,
-											level + 1);
-
-									newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
-									newState.getHashMap().get(new Coordinate(k, l)).setValue(transfer);
-									newState.getHashMap().get(new Coordinate(row, column))
-											.setValue(hashMap.get(new Coordinate(row, column)).getValue() - transfer);
-
-									states.add(newState);
-
-								}
-								break;
-
-							} else {
-								k--;
-								l--;
-							}
-
-						} else {
-							k--;
+						// // left diagonal UP
+						if (row % 2 == 1) {
+							magicNumberSlash = 0;
+						} else if (row % 2 == 0) {
+							magicNumberSlash = 1;
 						}
-					} // end of left diagonal up
 
-					if (row % 2 == 1) {
-						magicNumberSlash = 1;
-					} else if (row % 2 == 0) {
-						magicNumberSlash = 0;
-					}
+						for (int k = row - 1, l = column - magicNumberSlash; k > 0 && l > 0; k = k + 1 - 1) {
 
-					// right diagonal down
-					for (int k = row + 1, l = column +
+							if (k % 2 == 1) {
+								if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
+									break;
+								} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
+										&& hashMap.get(new Coordinate(k - 1, l)).getOwner() != free) {
+									for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
+											- 1; transfer > 0; transfer--) {
 
-							magicNumberSlash; k < hexgame.BSIZE && l < hexgame.BSIZE; k = k + 1 - 1) {
+										Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
 
-						if (k % 2 == 1) {
+										for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
+											Coordinate key = new Coordinate(entry.getKey());
+											GuiCell temp = new GuiCell(entry.getValue());
+
+											hashMap2.put(key, temp);
+										}
+
+										State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), this,
+												player, level + 1);
+
+										newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
+										newState.getHashMap().get(new Coordinate(k, l)).setValue(transfer);
+										newState.getHashMap().get(new Coordinate(row, column)).setValue(
+												hashMap.get(new Coordinate(row, column)).getValue() - transfer);
+
+										states.add(newState);
+									}
+									break;
+								} else {
+									k--;
+								}
+							} else if (k % 2 == 0) {
+								if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
+									break;
+								} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
+										&& hashMap.get(new Coordinate(k - 1, l - 1)).getOwner() != free) {
+									for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
+											- 1; transfer > 0; transfer--) {
+
+										Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
+
+										for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
+											Coordinate key = new Coordinate(entry.getKey());
+											GuiCell temp = new GuiCell(entry.getValue());
+
+											hashMap2.put(key, temp);
+										}
+
+										State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), this,
+												player, level + 1);
+
+										newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
+										newState.getHashMap().get(new Coordinate(k, l)).setValue(transfer);
+										newState.getHashMap().get(new Coordinate(row, column)).setValue(
+												hashMap.get(new Coordinate(row, column)).getValue() - transfer);
+
+										states.add(newState);
+
+									}
+									break;
+
+								} else {
+									k--;
+									l--;
+								}
+
+							} else {
+								k--;
+							}
+						} // end of left diagonal up
+
+						if (row % 2 == 1) {
+							magicNumberSlash = 1;
+						} else if (row % 2 == 0) {
+							magicNumberSlash = 0;
+						}
+
+						// right diagonal down
+						for (int k = row + 1, l = column +
+
+								magicNumberSlash; k < hexgame.BSIZE && l < hexgame.BSIZE; k = k + 1 - 1) {
+
+							if (k % 2 == 1) {
+								if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
+									break;
+								} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
+										&& hashMap.get(new Coordinate(k + 1, l + 1)).getOwner() != free) {
+									for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
+											- 1; transfer > 0; transfer--) {
+
+										Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
+
+										for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
+											Coordinate key = new Coordinate(entry.getKey());
+											GuiCell temp = new GuiCell(entry.getValue());
+
+											hashMap2.put(key, temp);
+										}
+
+										State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), this,
+												player, level + 1);
+
+										newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
+										newState.getHashMap().get(new Coordinate(k, l)).setValue(transfer);
+										newState.getHashMap().get(new Coordinate(row, column)).setValue(
+												hashMap.get(new Coordinate(row, column)).getValue() - transfer);
+
+										states.add(newState);
+									}
+									break;
+
+								} else {
+									k++;
+									l++;
+								}
+							} else if (k % 2 == 0) {
+								if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
+									break;
+								} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
+										&& hashMap.get(new Coordinate(k + 1, l)).getOwner() != free) {
+									for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
+											- 1; transfer > 0; transfer--) {
+
+										Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
+
+										for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
+											Coordinate key = new Coordinate(entry.getKey());
+											GuiCell temp = new GuiCell(entry.getValue());
+
+											hashMap2.put(key, temp);
+										}
+
+										State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), this,
+												player, level + 1);
+
+										newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
+										newState.getHashMap().get(new Coordinate(k, l)).setValue(transfer);
+										newState.getHashMap().get(new Coordinate(row, column)).setValue(
+												hashMap.get(new Coordinate(row, column)).getValue() - transfer);
+
+										states.add(newState);
+
+									}
+									break;
+
+								} else {
+									k++;
+								}
+
+							}
+						} // right diagonal down
+
+						if (row % 2 == 1) {
+							magicNumberBackSlash = 0;
+						} else if (row % 2 == 0) {
+							magicNumberBackSlash = 1;
+						}
+
+						// right diagonal up
+						for (int k = row + 1, l = column - magicNumberBackSlash; k < hexgame.BSIZE
+								&& l > 0; k = k + 1 - 1) {
+							if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
+								break;
+							} else
+
+							if (k % 2 == 1) {
+								if (hashMap.get(new Coordinate(k, l)).getOwner() == free
+										&& hashMap.get(new Coordinate(k + 1, l)).getOwner() != free) {
+									for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
+											- 1; transfer > 0; transfer--) {
+
+										Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
+
+										for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
+											Coordinate key = new Coordinate(entry.getKey());
+											GuiCell temp = new GuiCell(entry.getValue());
+
+											hashMap2.put(key, temp);
+										}
+
+										State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), this,
+												player, level + 1);
+
+										newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
+										newState.getHashMap().get(new Coordinate(k, l)).setValue(transfer);
+										newState.getHashMap().get(new Coordinate(row, column)).setValue(
+												hashMap.get(new Coordinate(row, column)).getValue() - transfer);
+
+										states.add(newState);
+									}
+									break;
+
+								} else {
+									k++;
+
+								}
+							} else if (k % 2 == 0) {
+								if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
+									break;
+								} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
+										&& hashMap.get(new Coordinate(k + 1, l - 1)).getOwner() != free) {
+									for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
+											- 1; transfer > 0; transfer--) {
+
+										Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
+
+										for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
+											Coordinate key = new Coordinate(entry.getKey());
+											GuiCell temp = new GuiCell(entry.getValue());
+
+											hashMap2.put(key, temp);
+										}
+
+										State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), this,
+												player, level + 1);
+
+										newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
+										newState.getHashMap().get(new Coordinate(k, l)).setValue(transfer);
+										newState.getHashMap().get(new Coordinate(row, column)).setValue(
+												hashMap.get(new Coordinate(row, column)).getValue() - transfer);
+
+										states.add(newState);
+									}
+									break;
+
+								} else {
+									k++;
+									l--;
+								}
+
+							}
+						} // right diagonal up
+
+						if (row % 2 == 1) {
+							magicNumberBackSlash = 1;
+						} else if (row % 2 == 0) {
+							magicNumberBackSlash = 0;
+						}
+
+						// left diagonal down
+						for (int k = row - 1, l = column + magicNumberBackSlash; k > 0
+								&& l < hexgame.BSIZE; k = k + 1 - 1) {
+
+							if (k % 2 == 1) {
+								if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
+									break;
+								} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
+										&& hashMap.get(new Coordinate(k - 1, l + 1)).getOwner() != free) {
+									for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
+											- 1; transfer > 0; transfer--) {
+
+										Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
+
+										for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
+											Coordinate key = new Coordinate(entry.getKey());
+											GuiCell temp = new GuiCell(entry.getValue());
+
+											hashMap2.put(key, temp);
+										}
+
+										State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), this,
+												player, level + 1);
+
+										newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
+										newState.getHashMap().get(new Coordinate(k, l)).setValue(transfer);
+										newState.getHashMap().get(new Coordinate(row, column)).setValue(
+												hashMap.get(new Coordinate(row, column)).getValue() - transfer);
+
+										states.add(newState);
+									}
+									break;
+
+								} else {
+									k--;
+									l++;
+
+								}
+							} else if (k % 2 == 0) {
+								if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
+									break;
+								} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
+										&& hashMap.get(new Coordinate(k - 1, l)).getOwner() != free) {
+
+									for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
+											- 1; transfer > 0; transfer--) {
+
+										Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
+
+										for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
+											Coordinate key = new Coordinate(entry.getKey());
+											GuiCell temp = new GuiCell(entry.getValue());
+
+											hashMap2.put(key, temp);
+										}
+
+										State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), this,
+												player, level + 1);
+
+										newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
+										newState.getHashMap().get(new Coordinate(k, l)).setValue(transfer);
+										newState.getHashMap().get(new Coordinate(row, column)).setValue(
+												hashMap.get(new Coordinate(row, column)).getValue() - transfer);
+
+										states.add(newState);
+
+									}
+									break;
+
+								} else {
+									k--;
+								}
+
+							}
+						} // left diagonal down
+
+						// vertical up
+						for (int k = row, l = column - 1; l > 0; k = k + 1 - 1) {
 							if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
 								break;
 							} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
-									&& hashMap.get(new Coordinate(k + 1, l + 1)).getOwner() != free) {
+									&& hashMap.get(new Coordinate(k, l - 1)).getOwner() != free) {
 								for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
 										- 1; transfer > 0; transfer--) {
 
@@ -292,95 +556,392 @@ public class State {
 								break;
 
 							} else {
-								k++;
+								l--;
+
+							}
+
+						} // end of vertical up
+
+						// vertical down
+						for (int k = row, l = column + 1; l < hexgame.BSIZE; k = k + 1 - 1) {
+
+							if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
+								break;
+							} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
+									&& hashMap.get(new Coordinate(k, l + 1)).getOwner() != free) {
+								for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
+										- 1; transfer > 0; transfer--) {
+
+									Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
+
+									for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
+										Coordinate key = new Coordinate(entry.getKey());
+										GuiCell temp = new GuiCell(entry.getValue());
+
+										hashMap2.put(key, temp);
+									}
+
+									State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), this, player,
+											level + 1);
+
+									newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
+									newState.getHashMap().get(new Coordinate(k, l)).setValue(transfer);
+									newState.getHashMap().get(new Coordinate(row, column))
+											.setValue(hashMap.get(new Coordinate(row, column)).getValue() - transfer);
+
+									states.add(newState);
+								}
+								break;
+
+							} else {
 								l++;
 							}
-						} else if (k % 2 == 0) {
-							if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
-								break;
-							} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
-									&& hashMap.get(new Coordinate(k + 1, l)).getOwner() != free) {
-								for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
-										- 1; transfer > 0; transfer--) {
 
-									Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
+						} // vertical down
 
-									for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
-										Coordinate key = new Coordinate(entry.getKey());
-										GuiCell temp = new GuiCell(entry.getValue());
+					} // if loop kung AI hex sya
 
-										hashMap2.put(key, temp);
-									}
+				} // for loop j closing
+			} // for loop i closing
+		}
 
-									State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), this, player,
-											level + 1);
+		if (currentTurn == player) {
 
-									newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
-									newState.getHashMap().get(new Coordinate(k, l)).setValue(transfer);
-									newState.getHashMap().get(new Coordinate(row, column))
-											.setValue(hashMap.get(new Coordinate(row, column)).getValue() - transfer);
+			for (int row = 0; row < hexgame.BSIZE; row++) {
+				for (int column = 0; column < hexgame.BSIZE; column++) {
 
-									states.add(newState);
+					if (hashMap.get(new Coordinate(row, column)).getOwner() == player) {
 
-								}
-								break;
-
-							} else {
-								k++;
-							}
-
+						// // left diagonal UP
+						if (row % 2 == 1) {
+							magicNumberSlash = 0;
+						} else if (row % 2 == 0) {
+							magicNumberSlash = 1;
 						}
-					} // right diagonal down
 
-					if (row % 2 == 1) {
-						magicNumberBackSlash = 0;
-					} else if (row % 2 == 0) {
-						magicNumberBackSlash = 1;
-					}
+						for (int k = row - 1, l = column - magicNumberSlash; k > 0 && l > 0; k = k + 1 - 1) {
 
-					// right diagonal up
-					for (int k = row + 1, l = column - magicNumberBackSlash; k < hexgame.BSIZE
-							&& l > 0; k = k + 1 - 1) {
-						if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
-							break;
-						} else
+							if (k % 2 == 1) {
+								if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
+									break;
+								} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
+										&& hashMap.get(new Coordinate(k - 1, l)).getOwner() != free) {
+									for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
+											- 1; transfer > 0; transfer--) {
 
-						if (k % 2 == 1) {
-							if (hashMap.get(new Coordinate(k, l)).getOwner() == free
-									&& hashMap.get(new Coordinate(k + 1, l)).getOwner() != free) {
-								for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
-										- 1; transfer > 0; transfer--) {
+										Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
 
-									Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
+										for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
+											Coordinate key = new Coordinate(entry.getKey());
+											GuiCell temp = new GuiCell(entry.getValue());
 
-									for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
-										Coordinate key = new Coordinate(entry.getKey());
-										GuiCell temp = new GuiCell(entry.getValue());
+											hashMap2.put(key, temp);
+										}
 
-										hashMap2.put(key, temp);
+										State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), this,
+												ai, level + 1);
+
+										newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
+										newState.getHashMap().get(new Coordinate(k, l)).setValue(transfer);
+										newState.getHashMap().get(new Coordinate(row, column)).setValue(
+												hashMap.get(new Coordinate(row, column)).getValue() - transfer);
+
+										states.add(newState);
 									}
-
-									State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), this, player,
-											level + 1);
-
-									newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
-									newState.getHashMap().get(new Coordinate(k, l)).setValue(transfer);
-									newState.getHashMap().get(new Coordinate(row, column))
-											.setValue(hashMap.get(new Coordinate(row, column)).getValue() - transfer);
-
-									states.add(newState);
+									break;
+								} else {
+									k--;
 								}
-								break;
+							} else if (k % 2 == 0) {
+								if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
+									break;
+								} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
+										&& hashMap.get(new Coordinate(k - 1, l - 1)).getOwner() != free) {
+									for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
+											- 1; transfer > 0; transfer--) {
+
+										Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
+
+										for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
+											Coordinate key = new Coordinate(entry.getKey());
+											GuiCell temp = new GuiCell(entry.getValue());
+
+											hashMap2.put(key, temp);
+										}
+
+										State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), this,
+												ai, level + 1);
+
+										newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
+										newState.getHashMap().get(new Coordinate(k, l)).setValue(transfer);
+										newState.getHashMap().get(new Coordinate(row, column)).setValue(
+												hashMap.get(new Coordinate(row, column)).getValue() - transfer);
+
+										states.add(newState);
+
+									}
+									break;
+
+								} else {
+									k--;
+									l--;
+								}
 
 							} else {
-								k++;
+								k--;
+							}
+						} // end of left diagonal up
+
+						if (row % 2 == 1) {
+							magicNumberSlash = 1;
+						} else if (row % 2 == 0) {
+							magicNumberSlash = 0;
+						}
+
+						// right diagonal down
+						for (int k = row + 1, l = column +
+
+								magicNumberSlash; k < hexgame.BSIZE && l < hexgame.BSIZE; k = k + 1 - 1) {
+
+							if (k % 2 == 1) {
+								if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
+									break;
+								} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
+										&& hashMap.get(new Coordinate(k + 1, l + 1)).getOwner() != free) {
+									for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
+											- 1; transfer > 0; transfer--) {
+
+										Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
+
+										for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
+											Coordinate key = new Coordinate(entry.getKey());
+											GuiCell temp = new GuiCell(entry.getValue());
+
+											hashMap2.put(key, temp);
+										}
+
+										State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), this,
+												ai, level + 1);
+
+										newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
+										newState.getHashMap().get(new Coordinate(k, l)).setValue(transfer);
+										newState.getHashMap().get(new Coordinate(row, column)).setValue(
+												hashMap.get(new Coordinate(row, column)).getValue() - transfer);
+
+										states.add(newState);
+									}
+									break;
+
+								} else {
+									k++;
+									l++;
+								}
+							} else if (k % 2 == 0) {
+								if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
+									break;
+								} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
+										&& hashMap.get(new Coordinate(k + 1, l)).getOwner() != free) {
+									for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
+											- 1; transfer > 0; transfer--) {
+
+										Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
+
+										for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
+											Coordinate key = new Coordinate(entry.getKey());
+											GuiCell temp = new GuiCell(entry.getValue());
+
+											hashMap2.put(key, temp);
+										}
+
+										State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), this,
+												ai, level + 1);
+
+										newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
+										newState.getHashMap().get(new Coordinate(k, l)).setValue(transfer);
+										newState.getHashMap().get(new Coordinate(row, column)).setValue(
+												hashMap.get(new Coordinate(row, column)).getValue() - transfer);
+
+										states.add(newState);
+
+									}
+									break;
+
+								} else {
+									k++;
+								}
 
 							}
-						} else if (k % 2 == 0) {
+						} // right diagonal down
+
+						if (row % 2 == 1) {
+							magicNumberBackSlash = 0;
+						} else if (row % 2 == 0) {
+							magicNumberBackSlash = 1;
+						}
+
+						// right diagonal up
+						for (int k = row + 1, l = column - magicNumberBackSlash; k < hexgame.BSIZE
+								&& l > 0; k = k + 1 - 1) {
+							if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
+								break;
+							} else
+
+							if (k % 2 == 1) {
+								if (hashMap.get(new Coordinate(k, l)).getOwner() == free
+										&& hashMap.get(new Coordinate(k + 1, l)).getOwner() != free) {
+									for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
+											- 1; transfer > 0; transfer--) {
+
+										Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
+
+										for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
+											Coordinate key = new Coordinate(entry.getKey());
+											GuiCell temp = new GuiCell(entry.getValue());
+
+											hashMap2.put(key, temp);
+										}
+
+										State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), this,
+												ai, level + 1);
+
+										newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
+										newState.getHashMap().get(new Coordinate(k, l)).setValue(transfer);
+										newState.getHashMap().get(new Coordinate(row, column)).setValue(
+												hashMap.get(new Coordinate(row, column)).getValue() - transfer);
+
+										states.add(newState);
+									}
+									break;
+
+								} else {
+									k++;
+
+								}
+							} else if (k % 2 == 0) {
+								if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
+									break;
+								} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
+										&& hashMap.get(new Coordinate(k + 1, l - 1)).getOwner() != free) {
+									for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
+											- 1; transfer > 0; transfer--) {
+
+										Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
+
+										for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
+											Coordinate key = new Coordinate(entry.getKey());
+											GuiCell temp = new GuiCell(entry.getValue());
+
+											hashMap2.put(key, temp);
+										}
+
+										State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), this,
+												ai, level + 1);
+
+										newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
+										newState.getHashMap().get(new Coordinate(k, l)).setValue(transfer);
+										newState.getHashMap().get(new Coordinate(row, column)).setValue(
+												hashMap.get(new Coordinate(row, column)).getValue() - transfer);
+
+										states.add(newState);
+									}
+									break;
+
+								} else {
+									k++;
+									l--;
+								}
+
+							}
+						} // right diagonal up
+
+						if (row % 2 == 1) {
+							magicNumberBackSlash = 1;
+						} else if (row % 2 == 0) {
+							magicNumberBackSlash = 0;
+						}
+
+						// left diagonal down
+						for (int k = row - 1, l = column + magicNumberBackSlash; k > 0
+								&& l < hexgame.BSIZE; k = k + 1 - 1) {
+
+							if (k % 2 == 1) {
+								if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
+									break;
+								} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
+										&& hashMap.get(new Coordinate(k - 1, l + 1)).getOwner() != free) {
+									for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
+											- 1; transfer > 0; transfer--) {
+
+										Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
+
+										for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
+											Coordinate key = new Coordinate(entry.getKey());
+											GuiCell temp = new GuiCell(entry.getValue());
+
+											hashMap2.put(key, temp);
+										}
+
+										State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), this,
+												ai, level + 1);
+
+										newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
+										newState.getHashMap().get(new Coordinate(k, l)).setValue(transfer);
+										newState.getHashMap().get(new Coordinate(row, column)).setValue(
+												hashMap.get(new Coordinate(row, column)).getValue() - transfer);
+
+										states.add(newState);
+									}
+									break;
+
+								} else {
+									k--;
+									l++;
+
+								}
+							} else if (k % 2 == 0) {
+								if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
+									break;
+								} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
+										&& hashMap.get(new Coordinate(k - 1, l)).getOwner() != free) {
+
+									for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
+											- 1; transfer > 0; transfer--) {
+
+										Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
+
+										for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
+											Coordinate key = new Coordinate(entry.getKey());
+											GuiCell temp = new GuiCell(entry.getValue());
+
+											hashMap2.put(key, temp);
+										}
+
+										State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), this,
+												ai, level + 1);
+
+										newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
+										newState.getHashMap().get(new Coordinate(k, l)).setValue(transfer);
+										newState.getHashMap().get(new Coordinate(row, column)).setValue(
+												hashMap.get(new Coordinate(row, column)).getValue() - transfer);
+
+										states.add(newState);
+
+									}
+									break;
+
+								} else {
+									k--;
+								}
+
+							}
+						} // left diagonal down
+
+						// vertical up
+						for (int k = row, l = column - 1; l > 0; k = k + 1 - 1) {
 							if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
 								break;
 							} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
-									&& hashMap.get(new Coordinate(k + 1, l - 1)).getOwner() != free) {
+									&& hashMap.get(new Coordinate(k, l - 1)).getOwner() != free) {
 								for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
 										- 1; transfer > 0; transfer--) {
 
@@ -393,7 +954,7 @@ public class State {
 										hashMap2.put(key, temp);
 									}
 
-									State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), this, player,
+									State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), this, ai,
 											level + 1);
 
 									newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
@@ -406,28 +967,19 @@ public class State {
 								break;
 
 							} else {
-								k++;
 								l--;
+
 							}
 
-						}
-					} // right diagonal up
+						} // end of vertical up
 
-					if (row % 2 == 1) {
-						magicNumberBackSlash = 1;
-					} else if (row % 2 == 0) {
-						magicNumberBackSlash = 0;
-					}
+						// vertical down
+						for (int k = row, l = column + 1; l < hexgame.BSIZE; k = k + 1 - 1) {
 
-					// left diagonal down
-					for (int k = row - 1, l = column + magicNumberBackSlash; k > 0
-							&& l < hexgame.BSIZE; k = k + 1 - 1) {
-
-						if (k % 2 == 1) {
 							if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
 								break;
 							} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
-									&& hashMap.get(new Coordinate(k - 1, l + 1)).getOwner() != free) {
+									&& hashMap.get(new Coordinate(k, l + 1)).getOwner() != free) {
 								for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
 										- 1; transfer > 0; transfer--) {
 
@@ -440,7 +992,7 @@ public class State {
 										hashMap2.put(key, temp);
 									}
 
-									State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), this, player,
+									State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), this, ai,
 											level + 1);
 
 									newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
@@ -453,127 +1005,16 @@ public class State {
 								break;
 
 							} else {
-								k--;
 								l++;
-
-							}
-						} else if (k % 2 == 0) {
-							if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
-								break;
-							} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
-									&& hashMap.get(new Coordinate(k - 1, l)).getOwner() != free) {
-
-								for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
-										- 1; transfer > 0; transfer--) {
-
-									Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
-
-									for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
-										Coordinate key = new Coordinate(entry.getKey());
-										GuiCell temp = new GuiCell(entry.getValue());
-
-										hashMap2.put(key, temp);
-									}
-
-									State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), this, player,
-											level + 1);
-
-									newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
-									newState.getHashMap().get(new Coordinate(k, l)).setValue(transfer);
-									newState.getHashMap().get(new Coordinate(row, column))
-											.setValue(hashMap.get(new Coordinate(row, column)).getValue() - transfer);
-
-									states.add(newState);
-
-								}
-								break;
-
-							} else {
-								k--;
 							}
 
-						}
-					} // left diagonal down
+						} // vertical down
 
-					// vertical up
-					for (int k = row, l = column - 1; l > 0; k = k + 1 - 1) {
-						if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
-							break;
-						} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
-								&& hashMap.get(new Coordinate(k, l - 1)).getOwner() != free) {
-							for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
-									- 1; transfer > 0; transfer--) {
+					} // if loop kung player hex sya
 
-								Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
-
-								for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
-									Coordinate key = new Coordinate(entry.getKey());
-									GuiCell temp = new GuiCell(entry.getValue());
-
-									hashMap2.put(key, temp);
-								}
-
-								State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), this, player,
-										level + 1);
-
-								newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
-								newState.getHashMap().get(new Coordinate(k, l)).setValue(transfer);
-								newState.getHashMap().get(new Coordinate(row, column))
-										.setValue(hashMap.get(new Coordinate(row, column)).getValue() - transfer);
-
-								states.add(newState);
-							}
-							break;
-
-						} else {
-							l--;
-
-						}
-
-					} // end of vertical up
-
-					// vertical down
-					for (int k = row, l = column + 1; l < hexgame.BSIZE; k = k + 1 - 1) {
-
-						if (hashMap.get(new Coordinate(k, l)).getOwner() != free) {
-							break;
-						} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
-								&& hashMap.get(new Coordinate(k, l + 1)).getOwner() != free) {
-							for (int transfer = hashMap.get(new Coordinate(row, column)).getValue()
-									- 1; transfer > 0; transfer--) {
-
-								Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
-
-								for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
-									Coordinate key = new Coordinate(entry.getKey());
-									GuiCell temp = new GuiCell(entry.getValue());
-
-									hashMap2.put(key, temp);
-								}
-
-								State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), this, player,
-										level + 1);
-
-								newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
-								newState.getHashMap().get(new Coordinate(k, l)).setValue(transfer);
-								newState.getHashMap().get(new Coordinate(row, column))
-										.setValue(hashMap.get(new Coordinate(row, column)).getValue() - transfer);
-
-								states.add(newState);
-							}
-							break;
-
-						} else {
-							l++;
-						}
-
-					} // vertical down
-
-				} // if loop kung AI hex sya
-
-			} // for loop j closing
-		} // for loop i closing
-
+				} // for loop j closing
+			} // for loop i closing
+		}
 		return states;
 
 	}
