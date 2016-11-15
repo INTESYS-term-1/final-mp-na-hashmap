@@ -286,71 +286,93 @@ public class hexgame {
 		btnDone.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("click");
-				Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
-
-				for (int i = 0; i < BSIZE; i++) {
-					for (int j = 0; j < BSIZE; j++) {
-						if (board[i][j].getOwner() == player) {
-							GuiCell guiCell = new GuiCell(board[i][j].getValue(), player);
-							Coordinate coordinate = new Coordinate(i, j);
-							hashMap2.put(coordinate, guiCell);
-						}
-						if (board[i][j].getOwner() == ai) {
-							GuiCell guiCell = new GuiCell(board[i][j].getValue(), ai);
-							Coordinate coordinate = new Coordinate(i, j);
-							hashMap2.put(coordinate, guiCell);
-						} 
-						
-						if (board[i][j].getOwner() == wall) {
-							GuiCell guiCell = new GuiCell(board[i][j].getValue(), wall);
-							Coordinate coordinate = new Coordinate(i, j);
-							hashMap2.put(coordinate, guiCell);
-						} 
-						if (board[i][j].getOwner() == free) {
-							GuiCell guiCell = new GuiCell(0, free);
-							Coordinate coordinate = new Coordinate(i, j);
-							hashMap2.put(coordinate, guiCell);
-						} 
-					}
-				}
-//
-//				for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
-//					Coordinate key = new Coordinate(entry.getKey());
-//					GuiCell temp = new GuiCell(entry.getValue());
-//					// Tab tab = entry.getValue();
-//					// do something with key and/or tab
-//					hashMap2.put(key, temp);
-//				}
-
-				State state = new State(new HashMap<Coordinate, GuiCell>(hashMap2), null, ai, 0);
-				ArrayList<State> states = new ArrayList<>(state.generateStates());
-
-				// System.out.println("----------------------------");
-				// for (int i = 0; i < states.size(); i++) {
-				// states.get(i).print();
-				// }
-
+				// Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate,
+				// GuiCell>(hashMap);
+				//
+				// State state = new State(new HashMap<Coordinate,
+				// GuiCell>(hashMap2), null, ai, 0);
+				// ArrayList<State> states = new
+				// ArrayList<>(state.generateStates());
+				//
 				// hashMap = new HashMap<Coordinate,
-				// GuiCell>(states.get(states.size()-1).getHashMap());
+				// GuiCell>(states.get(0).hashMap);
+				//
+				// System.out.println("Size of state: " + states.size());
+				// updateBoard();
 
-				hashMap = new HashMap<Coordinate, GuiCell>(states.get(0).hashMap);
-
-//				for (Map.Entry<Coordinate, GuiCell> entry : states.get(states.size() - 1).getHashMap().entrySet()) {
-//					Coordinate key = new Coordinate(entry.getKey());
-//					GuiCell temp = new GuiCell(entry.getValue());
-//					// Tab tab = entry.getValue();
-//					// do something with key and/or tab
-//					hashMap.put(key, temp);
-//				}
-
-				System.out.println("Size of state: " + states.size());
-				updateBoard();
-
-				// DrawingPanel panel = new DrawingPanel();
-
-//				createAndShowGUI();
+				algorithm();
+				// createAndShowGUI();
 			}
 		});
+
+	}
+
+	public void algorithm() {
+		ArrayList<State> explore = new ArrayList<State>();
+		ArrayList<State> visited = new ArrayList<State>();
+		ArrayList<State> nextStates = new ArrayList<State>();
+
+		// if (initialState == null) {
+		// initialState = new State(guiCells, null, ai, 0);
+		// }
+		Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>(hashMap);
+
+		State currState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), null, ai, 0);
+
+		// State currState = initialState;
+
+		System.out.println("Board at algo");
+
+		explore.add(currState);
+
+		int i = 0;
+
+		while (i < explore.size()) {
+			System.out.println("I: " + i);
+			System.out.println("Size: " + explore.size());
+			System.out.println("Triggered algo");
+			currState = explore.get(i);
+			visited.add(currState);
+
+//			 if (currState.generateStates().size() == 0) {
+//			 currState.computeScore();
+//			 }
+
+			nextStates = currState.generateStates();
+			for (State s : nextStates) {
+				if (!visited.contains(s) && !explore.contains(s)) {
+					System.out.println("level: " + s.getLevel());
+					explore.add(s);// uncomment for BFS
+
+				}
+			}
+			i++;
+		}
+
+		for (int m = 0; m < explore.size(); m++) {
+			if (explore.get(m).generateStates().size() == 0) {
+				explore.get(m).computeScore();
+
+				System.out.println("Nagcompute at size:" + m);
+			}
+		}
+
+		int maxScore = explore.get(0).getScore();
+
+		Map<Coordinate, GuiCell> tempHashMap = new HashMap<Coordinate, GuiCell>(explore.get(0).getHashMap());
+
+		for (int j = 1; j < explore.size(); j++) {
+			if (explore.get(j).getScore() >= maxScore && explore.get(j).getLevel() == 4) {
+				maxScore = explore.get(j).getScore();
+				System.out.println("last loop: " + explore.get(j).getScore());
+				tempHashMap = explore.get(j).getHashMap();
+			}
+
+		}
+
+		hashMap = new HashMap<Coordinate, GuiCell>(tempHashMap);
+
+		System.out.println("Done sa algo");
 
 	}
 

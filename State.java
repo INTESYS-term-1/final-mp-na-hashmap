@@ -83,19 +83,17 @@ public class State {
 
 	public void computeScore() {
 
-		// System.out.println("nagcomputer score");
-		//
-		// int sum = 0;
-		// for (int i = 0; i < hexgame.BSIZE; i++) {
-		// for (int j = 0; j < hexgame.BSIZE; j++) {
-		// if (board[i][j].getOwner() == ai) {
-		// sum++;
-		// }
-		// }
-		// }
-		//
-		// score = sum;
+		int sum = 0;
+		for (int i = 0; i < hexgame.BSIZE; i++) {
+			for (int j = 0; j < hexgame.BSIZE; j++) {
+				if (hashMap.get(new Coordinate(i, j)).getOwner() == ai) {
+					sum++;
+				}
+			}
+		}
 
+		this.score = sum;
+		System.out.println("Eto sum bes: " + score);
 		propagateScore();
 	}
 
@@ -106,7 +104,7 @@ public class State {
 
 	public void submit(State s) {
 		if (currentTurn == player) {
-			score = Math.min(score, s.getScore());
+			score = Math.max(score, s.getScore());
 		} else {
 			score = Math.max(score, s.getScore());
 		}
@@ -145,50 +143,10 @@ public class State {
 
 	public void print() {
 
-		// for (int j = 0; j < Gui.BOARDROW; j++) {
-		// System.out.println();
-		// for (int z = 0; z < Gui.BOARDCOLUMN; z++) {
-		// System.out.print(dummy[j][z].getValue());
-		// System.out.print(" | ");
-		//
-		// }
-		//
-		// }
-
-		// Collection c = hashMap.values();
-		// Iterator itr = c.iterator();
-		//
-		// System.out.println("-------------------------------------------------------");
-		// int i = 0;
-		// for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
-		//
-		// if (i != 0)
-		// if (i % hexgame.BSIZE - 1 == 0) {
-		// System.out.println();
-		// System.out.print(entry.getValue().getValue());
-		// System.out.print(" | ");
-		// } else {
-		// System.out.print(entry.getValue().getValue());
-		// System.out.print(" | ");
-		// }
-		//
-		// i++;
-		//
-		// // Tab tab = entry.getValue();
-		// // do something with key and/or tab
-		// }
 		System.out.println();
 
 		for (int i = 0; i < hexgame.BSIZE; i++) {
 			for (int j = 0; j < hexgame.BSIZE; j++) {
-				// if (hashMap.get(new Coordinate(j, i)).getValue() != 0) {
-				// System.out.print(j + " " + i);
-				//
-				// } else {
-				// System.out.print(hashMap.get(new Coordinate(j,
-				// i)).getValue());
-				//
-				// }
 				System.out.print(hashMap.get(new Coordinate(i, j)).getValue());
 
 				System.out.print(" | ");
@@ -620,9 +578,4 @@ public class State {
 
 	}
 
-	public int calculateScore() {
-		int score = 0;
-
-		return score;
-	}
 }
