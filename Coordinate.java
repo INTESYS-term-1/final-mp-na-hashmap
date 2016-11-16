@@ -57,4 +57,53 @@ public class Coordinate {
 		System.out.println("Y: " + y);
 	}
 
+	public Coordinate goUp(){
+		this.setY(this.getY()-1);
+		return this;
+	}
+	public Coordinate goDown(){
+		this.setY(this.getY()+1);
+		return this;
+	}
+	public Coordinate goLeftUp(){
+		if(this.getX()%2==0){
+			this.setX(this.getX()-1);
+			this.setY(this.getY()-1);
+		}
+		else{
+			this.setX(this.getX()-1);
+		}
+		return this;
+	}
+	public Coordinate goLeftDown(){
+		if(this.getX()%2==0){
+			this.setX(this.getX()-1);
+		}
+		else{
+			this.setX(this.getX()-1);
+			this.setY(this.getY()+1);
+		}
+		return this;
+	}
+	public Coordinate goRightUp(){
+		if(this.getX()%2==0){
+			this.setX(this.getX()+1);
+			this.setY(this.getY()-1);
+		}
+		else{
+			this.setX(this.getX()+1);
+		}
+		return this;
+	}
+	public Coordinate goRightDown(){
+		if(this.getX()%2==0){// old x cell even thus:
+			this.setX(this.getX()+1);
+		}
+		else{// if old x cell is odd then:
+			this.setX(this.getX()+1);
+			this.setY(this.getY()+1);
+		}
+		return this;
+	}
+
 }

@@ -37,7 +37,6 @@ public class hexgame {
 	final static Color COLOURGRID = Color.BLACK;
 	final static Color COLOURONE = Color.green;
 	final static Color COLOURONETXT = Color.WHITE;
-
 	final static Color COLOURTWO = Color.RED;
 	final static Color COLOURTWOTXT = Color.WHITE;
 
@@ -46,6 +45,17 @@ public class hexgame {
 
 	final static Color COLOURFOUR = Color.BLACK;
 	final static Color COLOURFOURTXT = Color.BLACK;
+
+	// for cell direction
+	final static int UP = 0;
+	final static int DOWN = 1;
+	final static int LEFT_UP = 2;
+	final static int LEFT_DOWN = 3;
+	final static int RIGHT_UP = 4;
+	final static int RIGHT_DOWN = 5;
+
+
+
 
 	// final static Color COLOURTWO = new Color(0,0,0,200);
 
@@ -337,84 +347,140 @@ public class hexgame {
 
 		class MyMouseListener extends MouseAdapter { // inner class inside
 			// DrawingPanel
-														// DrawingPanel
+			private boolean isAtEnd(Coordinate oldPoint, Coordinate newPoint, int direction){
+				switch(direction){
+					case DOWN:
+						do{ // down
+							oldPoint.goDown();
+							if(!hashMap.containsKey(oldPoint))
+								break;
+						}while(hashMap.get(oldPoint).getOwner() == free);
+						oldPoint.goUp();
+						if(oldPoint.equals(newPoint))
+							return true;
+						break;
+					case UP:
+						do{// going up
+							oldPoint.goUp();
+							if(!hashMap.containsKey(oldPoint))
+								break;
+						}while(hashMap.get(oldPoint).getOwner() ==  free);
+						oldPoint.goDown();
+						if(oldPoint.equals(newPoint))
+							return true;
+						break;
+					case LEFT_DOWN:
+						do{// lower left diagonal
+							oldPoint.goLeftDown();
+							if(!hashMap.containsKey(oldPoint))
+								break;
+						}while(hashMap.get(oldPoint).getOwner() ==  free);
+						oldPoint.goRightUp();
+						if(oldPoint.equals(newPoint))
+							return true;
+						break;
+					case LEFT_UP:
+						do{// upper left diagonal
+							oldPoint.goLeftUp();
+							if(!hashMap.containsKey(oldPoint))
+								break;
+						}while(hashMap.get(oldPoint).getOwner() ==  free);
+						oldPoint.goRightDown();
+						if(oldPoint.equals(newPoint))
+							return true;
+						break;
+					case RIGHT_UP:
+						do{//upper right diagonal
+							oldPoint.goRightUp();
+							if(!hashMap.containsKey(oldPoint))
+								break;
+						}while(hashMap.get(oldPoint).getOwner() ==  free);
+						oldPoint.goLeftDown();
+
+						if(oldPoint.equals(newPoint))
+							return true;
+						break;
+					case RIGHT_DOWN:
+						do{//lower right diagonal
+							oldPoint.goRightDown();
+							if(!hashMap.containsKey(oldPoint))
+								break;
+						}while(hashMap.get(oldPoint).getOwner() ==  free);
+						oldPoint.goLeftUp();
+						if(oldPoint.equals(newPoint))
+							return true;
+						break;
+				}
+				return false;
+			}
 			private boolean validPlace(Coordinate old, Coordinate newPoint){
 				Coordinate oldPoint = new Coordinate(old.getX(), old.getY());
-					oldPoint = new Coordinate(old.getX(), old.getY());
-					do{ // down
-						oldPoint.setY(oldPoint.getY()+1);
-						if(oldPoint.equals(newPoint))
-							return true;
-						if(!hashMap.containsKey(oldPoint))
-							break;
-					}while(hashMap.get(oldPoint).getOwner() == free);
-					oldPoint = new Coordinate(old.getX(), old.getY());
-					do{//lower right diagonal
-						if(oldPoint.getX()%2==0){// old x cell even thus:
-							oldPoint.setX(oldPoint.getX()+1);
-						}
-						else{// if old x cell is odd then:
-							oldPoint.setX(oldPoint.getX()+1);
-							oldPoint.setY(oldPoint.getY()+1);
-						}
-						if(oldPoint.equals(newPoint))
-							return true;
-						if(!hashMap.containsKey(oldPoint))
-							break;
-					}while(hashMap.get(oldPoint).getOwner() ==  free);
-					oldPoint = new Coordinate(old.getX(), old.getY());
-					do{//upper right diagonal
-						if(oldPoint.getX()%2==0){
-							oldPoint.setX(oldPoint.getX()+1);
-							oldPoint.setY(oldPoint.getY()-1);
-						}
-						else{
-							oldPoint.setX(oldPoint.getX()+1);
-						}
-						if(oldPoint.equals(newPoint))
-							return true;
-						if(!hashMap.containsKey(oldPoint))
-							break;
-					}while(hashMap.get(oldPoint).getOwner() ==  free);
-					oldPoint = new Coordinate(old.getX(), old.getY());
-					do{// going up
-						oldPoint.setY(oldPoint.getY()-1);
-						if(oldPoint.equals(newPoint))
-							return true;
-						if(!hashMap.containsKey(oldPoint))
-							break;
-					}while(hashMap.get(oldPoint).getOwner() ==  free);
-					oldPoint = new Coordinate(old.getX(), old.getY());
-					do{// upper left diagonal
-						if(oldPoint.getX()%2==0){
-							oldPoint.setX(oldPoint.getX()-1);
-							oldPoint.setY(oldPoint.getY()-1);
-						}
-						else{
-							oldPoint.setX(oldPoint.getX()-1);
-						}
-						if(oldPoint.equals(newPoint)){
-							return true;
-						}
-						if(!hashMap.containsKey(oldPoint))
-							break;
-					}while(hashMap.get(oldPoint).getOwner() ==  free);
-					oldPoint = new Coordinate(old.getX(), old.getY());
-					do {// lower left diagonal
-						if(oldPoint.getX()%2==0){
-							oldPoint.setX(oldPoint.getX()-1);
-						}
-						else{
-							oldPoint.setX(oldPoint.getX()-1);
-							oldPoint.setY(oldPoint.getY()+1);
-						}
-						if(oldPoint.equals(newPoint))
-							return true;
-						if(!hashMap.containsKey(oldPoint))
-							break;
-					}while (hashMap.get(oldPoint).getOwner() == free);
-//				}
-				JOptionPane.showMessageDialog(null, "Can't place sheep there.");
+
+				do{ // down
+					oldPoint.goDown();
+					if(oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, DOWN)) {
+						return true;
+					}
+					if(!hashMap.containsKey(oldPoint))
+						break;
+				}while(hashMap.get(oldPoint).getOwner() == free);
+
+				oldPoint = new Coordinate(old.getX(), old.getY());
+
+				do{//lower right diagonal
+					oldPoint.goRightDown();
+					if(oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, RIGHT_DOWN)) {
+						return true;
+					}
+					if(!hashMap.containsKey(oldPoint))
+						break;
+				}while(hashMap.get(oldPoint).getOwner() ==  free);
+
+				oldPoint = new Coordinate(old.getX(), old.getY());
+
+				do{//upper right diagonal
+					oldPoint.goRightUp();
+					if(oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, RIGHT_UP)) {
+						return true;
+					}
+					if(!hashMap.containsKey(oldPoint))
+						break;
+				}while(hashMap.get(oldPoint).getOwner() ==  free);
+
+				oldPoint = new Coordinate(old.getX(), old.getY());
+
+				do{// going up
+					oldPoint.goUp();
+					if(oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, UP)) {
+						return true;
+					}
+					if(!hashMap.containsKey(oldPoint))
+						break;
+				}while(hashMap.get(oldPoint).getOwner() ==  free);
+
+				oldPoint = new Coordinate(old.getX(), old.getY());
+
+				do{// upper left diagonal
+					oldPoint.goLeftUp();
+					if(oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, LEFT_UP)){
+						return true;
+					}
+					if(!hashMap.containsKey(oldPoint))
+						break;
+				}while(hashMap.get(oldPoint).getOwner() ==  free);
+
+				oldPoint = new Coordinate(old.getX(), old.getY());
+
+				do {// lower left diagonal
+					oldPoint.goLeftDown();
+					if(oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, LEFT_DOWN)){
+
+						return true;
+					}
+					if(!hashMap.containsKey(oldPoint))
+						break;
+				}while (hashMap.get(oldPoint).getOwner() == free);
+				JOptionPane.showMessageDialog(null, "Can't place sheep there.", "Sorry", JOptionPane.INFORMATION_MESSAGE);
 				return false;
 			}
 			public void mouseClicked(MouseEvent e) {
