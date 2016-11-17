@@ -54,9 +54,6 @@ public class hexgame {
 	final static int RIGHT_UP = 4;
 	final static int RIGHT_DOWN = 5;
 
-
-
-
 	// final static Color COLOURTWO = new Color(0,0,0,200);
 
 	final static int EMPTY = 1;
@@ -158,31 +155,25 @@ public class hexgame {
 		// board[3][2] = 'D';
 
 		// displayBoardConsole();
-/*
-<<<<<<< HEAD
-		for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
-			Coordinate key = new Coordinate(entry.getKey());
-			GuiCell temp = new GuiCell(entry.getValue());
-			// Tab tab = entry.getValue();
-			// do something with key and/or tab
-			hashMap2.put(key, temp);
-		}
-
-		;
-		State state = new State(new HashMap(hashMap2), null, ai, 0);
-		ArrayList<State> states = state.generateStates();
-
-
-
-//		System.out.println("----------------------------");
-//		for (int i = 0; i < states.size(); i++) {
-//			states.get(i).print();
-//		}
-
-//		hashMap = states.get(states.size()-1).getHashMap();
-		updateBoard();
-=======*/
-//>>>>>>> master
+		/*
+		 * <<<<<<< HEAD for (Map.Entry<Coordinate, GuiCell> entry :
+		 * hashMap.entrySet()) { Coordinate key = new
+		 * Coordinate(entry.getKey()); GuiCell temp = new
+		 * GuiCell(entry.getValue()); // Tab tab = entry.getValue(); // do
+		 * something with key and/or tab hashMap2.put(key, temp); }
+		 * 
+		 * ; State state = new State(new HashMap(hashMap2), null, ai, 0);
+		 * ArrayList<State> states = state.generateStates();
+		 * 
+		 * 
+		 * 
+		 * // System.out.println("----------------------------"); // for (int i
+		 * = 0; i < states.size(); i++) { // states.get(i).print(); // }
+		 * 
+		 * // hashMap = states.get(states.size()-1).getHashMap(); updateBoard();
+		 * =======
+		 */
+		// >>>>>>> master
 		// displ3ayBoardConsole();
 
 	}
@@ -244,11 +235,8 @@ public class hexgame {
 	}
 
 	public void initializeAISheeps() {
-		hashMap.put(new Coordinate(2,4), new GuiCell(numberOfSheepsPerPlayer, ai));
-		
-		
-		
-		
+		hashMap.put(new Coordinate(2, 4), new GuiCell(numberOfSheepsPerPlayer, ai));
+
 		// hashMap.put(new Coordinate(4, 1), new
 		// GuiCell(numberOfSheepsPerPlayer, ai));
 		//
@@ -335,25 +323,37 @@ public class hexgame {
 				// GuiCell>(states.get(0).hashMap);
 				//
 				// System.out.println("Size of state: " + states.size());
-//				// updateBoard();
-				
-				
-				
-//				Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>(hashMap);
-//
+				// // updateBoard();
+
+				// Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate,
+				// GuiCell>(hashMap);
+				//
 				State currState = new State(new HashMap<Coordinate, GuiCell>(hashMap), null, ai, 0);
-//				System.out.println("SCORE: " + currState.computeScore());
-				
-				
-				//algorithm();
+				// System.out.println("SCORE: " + currState.computeScore());
+
+				// algorithm();
 				// createAndShowGUI();
-				
-				
-				hashMap = new HashMap(currState.getAttackingCoordinate().getHashMap());
-				
+
+				try {
+//					hashMap = new HashMap(currState.getAttackingCoordinate().getHashMap());
+//					System.out.println("Null try catch");
+//					
+//					int numberOfAIValue1 = 0;
+//					int numberOfPlayerValue1 = 0;
+//				
+					
+
+					
+					if(currState.generateStates().size()==0){
+						createAndShowGUI();
+					}
+					
+				} catch (Exception e) {
+					algorithm();
+				}
+
 				splitPane.repaint();
-				
-				
+
 			}
 		});
 
@@ -386,9 +386,9 @@ public class hexgame {
 			currState = explore.get(i);
 			visited.add(currState);
 
-//			 if (currState.generateStates().size() == 0) {
-//			 currState.computeScore();
-//			 }
+			// if (currState.generateStates().size() == 0) {
+			// currState.computeScore();
+			// }
 
 			nextStates = currState.generateStates();
 			for (State s : nextStates) {
@@ -470,142 +470,145 @@ public class hexgame {
 
 		class MyMouseListener extends MouseAdapter { // inner class inside
 			// DrawingPanel
-			private boolean isAtEnd(Coordinate oldPoint, Coordinate newPoint, int direction){
-				switch(direction){
-					case DOWN:
-						do{ // down
-							oldPoint.goDown();
-							if(!hashMap.containsKey(oldPoint))
-								break;
-						}while(hashMap.get(oldPoint).getOwner() == free);
-						oldPoint.goUp();
-						if(oldPoint.equals(newPoint))
-							return true;
-						break;
-					case UP:
-						do{// going up
-							oldPoint.goUp();
-							if(!hashMap.containsKey(oldPoint))
-								break;
-						}while(hashMap.get(oldPoint).getOwner() ==  free);
+			private boolean isAtEnd(Coordinate oldPoint, Coordinate newPoint, int direction) {
+				switch (direction) {
+				case DOWN:
+					do { // down
 						oldPoint.goDown();
-						if(oldPoint.equals(newPoint))
-							return true;
-						break;
-					case LEFT_DOWN:
-						do{// lower left diagonal
-							oldPoint.goLeftDown();
-							if(!hashMap.containsKey(oldPoint))
-								break;
-						}while(hashMap.get(oldPoint).getOwner() ==  free);
-						oldPoint.goRightUp();
-						if(oldPoint.equals(newPoint))
-							return true;
-						break;
-					case LEFT_UP:
-						do{// upper left diagonal
-							oldPoint.goLeftUp();
-							if(!hashMap.containsKey(oldPoint))
-								break;
-						}while(hashMap.get(oldPoint).getOwner() ==  free);
-						oldPoint.goRightDown();
-						if(oldPoint.equals(newPoint))
-							return true;
-						break;
-					case RIGHT_UP:
-						do{//upper right diagonal
-							oldPoint.goRightUp();
-							if(!hashMap.containsKey(oldPoint))
-								break;
-						}while(hashMap.get(oldPoint).getOwner() ==  free);
+						if (!hashMap.containsKey(oldPoint))
+							break;
+					} while (hashMap.get(oldPoint).getOwner() == free);
+					oldPoint.goUp();
+					if (oldPoint.equals(newPoint))
+						return true;
+					break;
+				case UP:
+					do {// going up
+						oldPoint.goUp();
+						if (!hashMap.containsKey(oldPoint))
+							break;
+					} while (hashMap.get(oldPoint).getOwner() == free);
+					oldPoint.goDown();
+					if (oldPoint.equals(newPoint))
+						return true;
+					break;
+				case LEFT_DOWN:
+					do {// lower left diagonal
 						oldPoint.goLeftDown();
-
-						if(oldPoint.equals(newPoint))
-							return true;
-						break;
-					case RIGHT_DOWN:
-						do{//lower right diagonal
-							oldPoint.goRightDown();
-							if(!hashMap.containsKey(oldPoint))
-								break;
-						}while(hashMap.get(oldPoint).getOwner() ==  free);
+						if (!hashMap.containsKey(oldPoint))
+							break;
+					} while (hashMap.get(oldPoint).getOwner() == free);
+					oldPoint.goRightUp();
+					if (oldPoint.equals(newPoint))
+						return true;
+					break;
+				case LEFT_UP:
+					do {// upper left diagonal
 						oldPoint.goLeftUp();
-						if(oldPoint.equals(newPoint))
-							return true;
-						break;
+						if (!hashMap.containsKey(oldPoint))
+							break;
+					} while (hashMap.get(oldPoint).getOwner() == free);
+					oldPoint.goRightDown();
+					if (oldPoint.equals(newPoint))
+						return true;
+					break;
+				case RIGHT_UP:
+					do {// upper right diagonal
+						oldPoint.goRightUp();
+						if (!hashMap.containsKey(oldPoint))
+							break;
+					} while (hashMap.get(oldPoint).getOwner() == free);
+					oldPoint.goLeftDown();
+
+					if (oldPoint.equals(newPoint))
+						return true;
+					break;
+				case RIGHT_DOWN:
+					do {// lower right diagonal
+						oldPoint.goRightDown();
+						if (!hashMap.containsKey(oldPoint))
+							break;
+					} while (hashMap.get(oldPoint).getOwner() == free);
+					oldPoint.goLeftUp();
+					if (oldPoint.equals(newPoint))
+						return true;
+					break;
 				}
 				return false;
 			}
-			private boolean validPlace(Coordinate old, Coordinate newPoint){
+
+			private boolean validPlace(Coordinate old, Coordinate newPoint) {
 				Coordinate oldPoint = new Coordinate(old.getX(), old.getY());
 
-				do{ // down
+				do { // down
 					oldPoint.goDown();
-					if(oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, DOWN)) {
+					if (oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, DOWN)) {
 						return true;
 					}
-					if(!hashMap.containsKey(oldPoint))
+					if (!hashMap.containsKey(oldPoint))
 						break;
-				}while(hashMap.get(oldPoint).getOwner() == free);
+				} while (hashMap.get(oldPoint).getOwner() == free);
 
 				oldPoint = new Coordinate(old.getX(), old.getY());
 
-				do{//lower right diagonal
+				do {// lower right diagonal
 					oldPoint.goRightDown();
-					if(oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, RIGHT_DOWN)) {
+					if (oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, RIGHT_DOWN)) {
 						return true;
 					}
-					if(!hashMap.containsKey(oldPoint))
+					if (!hashMap.containsKey(oldPoint))
 						break;
-				}while(hashMap.get(oldPoint).getOwner() ==  free);
+				} while (hashMap.get(oldPoint).getOwner() == free);
 
 				oldPoint = new Coordinate(old.getX(), old.getY());
 
-				do{//upper right diagonal
+				do {// upper right diagonal
 					oldPoint.goRightUp();
-					if(oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, RIGHT_UP)) {
+					if (oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, RIGHT_UP)) {
 						return true;
 					}
-					if(!hashMap.containsKey(oldPoint))
+					if (!hashMap.containsKey(oldPoint))
 						break;
-				}while(hashMap.get(oldPoint).getOwner() ==  free);
+				} while (hashMap.get(oldPoint).getOwner() == free);
 
 				oldPoint = new Coordinate(old.getX(), old.getY());
 
-				do{// going up
+				do {// going up
 					oldPoint.goUp();
-					if(oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, UP)) {
+					if (oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, UP)) {
 						return true;
 					}
-					if(!hashMap.containsKey(oldPoint))
+					if (!hashMap.containsKey(oldPoint))
 						break;
-				}while(hashMap.get(oldPoint).getOwner() ==  free);
+				} while (hashMap.get(oldPoint).getOwner() == free);
 
 				oldPoint = new Coordinate(old.getX(), old.getY());
 
-				do{// upper left diagonal
+				do {// upper left diagonal
 					oldPoint.goLeftUp();
-					if(oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, LEFT_UP)){
+					if (oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, LEFT_UP)) {
 						return true;
 					}
-					if(!hashMap.containsKey(oldPoint))
+					if (!hashMap.containsKey(oldPoint))
 						break;
-				}while(hashMap.get(oldPoint).getOwner() ==  free);
+				} while (hashMap.get(oldPoint).getOwner() == free);
 
 				oldPoint = new Coordinate(old.getX(), old.getY());
 
 				do {// lower left diagonal
 					oldPoint.goLeftDown();
-					if(oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, LEFT_DOWN)){
+					if (oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, LEFT_DOWN)) {
 
 						return true;
 					}
-					if(!hashMap.containsKey(oldPoint))
+					if (!hashMap.containsKey(oldPoint))
 						break;
-				}while (hashMap.get(oldPoint).getOwner() == free);
-				JOptionPane.showMessageDialog(null, "Can't place sheep there.", "Sorry", JOptionPane.INFORMATION_MESSAGE);
+				} while (hashMap.get(oldPoint).getOwner() == free);
+				JOptionPane.showMessageDialog(null, "Can't place sheep there.", "Sorry",
+						JOptionPane.INFORMATION_MESSAGE);
 				return false;
 			}
+
 			public void mouseClicked(MouseEvent e) {
 				// mPt.x = x;
 				// mPt.y = y;
@@ -672,16 +675,18 @@ public class hexgame {
 					else if (board[p.x][p.y].getOwner() == free && isHolding == true) {
 						int oldX = Integer.parseInt(lblxcoord.getText());
 						int oldY = Integer.parseInt(lblycoord.getText());
-//<<<<<<< HEAD
-						Coordinate oldCoordinate =  new Coordinate(oldX, oldY);
-						Coordinate newCoordinate =  new Coordinate(p.x, p.y);
+						// <<<<<<< HEAD
+						Coordinate oldCoordinate = new Coordinate(oldX, oldY);
+						Coordinate newCoordinate = new Coordinate(p.x, p.y);
 						if (validPlace(oldCoordinate, newCoordinate)) {
-/*=======
-
-						// if (oldX - p.x == oldY - p.y || p.x - oldX == oldY -
-						// p.y || oldX - p.x == p.y - oldY
-						// || p.x - oldX == p.y - oldY || oldX == p.x) {
->>>>>>> master*/
+							/*
+							 * =======
+							 * 
+							 * // if (oldX - p.x == oldY - p.y || p.x - oldX ==
+							 * oldY - // p.y || oldX - p.x == p.y - oldY // ||
+							 * p.x - oldX == p.y - oldY || oldX == p.x) {
+							 * >>>>>>> master
+							 */
 
 							hashMap.replace(new Coordinate(p.x, p.y), new GuiCell(holding, player));
 
@@ -716,7 +721,6 @@ public class hexgame {
 
 				repaint();
 			}
-
 
 		} // end of MyMouseListener class
 	} // end of DrawingPanel class

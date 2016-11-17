@@ -580,8 +580,10 @@ public class State {
 		}
 		
 		
-		System.out.println("null");
+	
 		return null;
+		
+		
 	}
 
 	public State randomLeftDiagonalUp() {
@@ -1114,6 +1116,9 @@ public class State {
 
 			}
 		} // left diagonal down
+		
+		
+		
 		return null;
 	}
 
