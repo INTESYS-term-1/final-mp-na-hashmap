@@ -158,8 +158,8 @@ public class hexgame {
 		// board[3][2] = 'D';
 
 		// displayBoardConsole();
-		Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>();
-
+/*
+<<<<<<< HEAD
 		for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
 			Coordinate key = new Coordinate(entry.getKey());
 			GuiCell temp = new GuiCell(entry.getValue());
@@ -181,7 +181,10 @@ public class hexgame {
 
 //		hashMap = states.get(states.size()-1).getHashMap();
 		updateBoard();
-		// displayBoardConsole();
+=======*/
+//>>>>>>> master
+		// displ3ayBoardConsole();
+
 	}
 
 	public void displayBoardConsole() {
@@ -241,9 +244,23 @@ public class hexgame {
 	}
 
 	public void initializeAISheeps() {
-		hashMap.put(new Coordinate(6,5), new GuiCell(numberOfSheepsPerPlayer, ai));
-		hashMap.put(new Coordinate(1,2), new GuiCell(numberOfSheepsPerPlayer, ai));
+		hashMap.put(new Coordinate(4, 4), new GuiCell(numberOfSheepsPerPlayer, ai));
+		// hashMap.put(new Coordinate(4, 1), new
+		// GuiCell(numberOfSheepsPerPlayer, ai));
+		//
+		// hashMap.put(new Coordinate(4, 2), new
+		// GuiCell(numberOfSheepsPerPlayer, ai));
+		//
+		// hashMap.put(new Coordinate(4, 3), new
+		// GuiCell(numberOfSheepsPerPlayer, ai));
+		//
+		// hashMap.put(new Coordinate(4, 5), new
+		// GuiCell(numberOfSheepsPerPlayer, ai));
+		// hashMap.put(new Coordinate(4, 6), new
+		// GuiCell(numberOfSheepsPerPlayer, ai));
 
+		// hashMap.put(new Coordinate(4, 2), new
+		// GuiCell(numberOfSheepsPerPlayer, ai));
 
 	}
 
@@ -288,12 +305,6 @@ public class hexgame {
 		lblSheepsPerPlaye.add(btnDone, "cell 0 9,alignx center");
 		splitPane.setDividerLocation(550);
 
-		btnDone.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				System.out.println("click");
-			}
-		});
-
 		Container content = frame.getContentPane();
 		content.add(splitPane);
 		// this.add(panel); -- cannot be done in a static context
@@ -304,6 +315,97 @@ public class hexgame {
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
+
+		btnDone.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.out.println("click");
+				// Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate,
+				// GuiCell>(hashMap);
+				//
+				// State state = new State(new HashMap<Coordinate,
+				// GuiCell>(hashMap2), null, ai, 0);
+				// ArrayList<State> states = new
+				// ArrayList<>(state.generateStates());
+				//
+				// hashMap = new HashMap<Coordinate,
+				// GuiCell>(states.get(0).hashMap);
+				//
+				// System.out.println("Size of state: " + states.size());
+				// updateBoard();
+
+				algorithm();
+				// createAndShowGUI();
+			}
+		});
+
+	}
+
+	public void algorithm() {
+		ArrayList<State> explore = new ArrayList<State>();
+		ArrayList<State> visited = new ArrayList<State>();
+		ArrayList<State> nextStates = new ArrayList<State>();
+
+		// if (initialState == null) {
+		// initialState = new State(guiCells, null, ai, 0);
+		// }
+		Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>(hashMap);
+
+		State currState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), null, ai, 0);
+
+		// State currState = initialState;
+
+		System.out.println("Board at algo");
+
+		explore.add(currState);
+
+		int i = 0;
+
+		while (i < explore.size()) {
+			System.out.println("I: " + i);
+			System.out.println("Size: " + explore.size());
+			System.out.println("Triggered algo");
+			currState = explore.get(i);
+			visited.add(currState);
+
+//			 if (currState.generateStates().size() == 0) {
+//			 currState.computeScore();
+//			 }
+
+			nextStates = currState.generateStates();
+			for (State s : nextStates) {
+				if (!visited.contains(s) && !explore.contains(s)) {
+					System.out.println("level: " + s.getLevel());
+					explore.add(s);// uncomment for BFS
+
+				}
+			}
+			i++;
+		}
+
+		for (int m = 0; m < explore.size(); m++) {
+			if (explore.get(m).generateStates().size() == 0) {
+				explore.get(m).computeScore();
+
+				System.out.println("Nagcompute at size:" + m);
+			}
+		}
+
+		int maxScore = explore.get(0).getScore();
+
+		Map<Coordinate, GuiCell> tempHashMap = new HashMap<Coordinate, GuiCell>(explore.get(0).getHashMap());
+
+		for (int j = 1; j < explore.size(); j++) {
+			if (explore.get(j).getScore() >= maxScore && explore.get(j).getLevel() == 4) {
+				maxScore = explore.get(j).getScore();
+				System.out.println("last loop: " + explore.get(j).getScore());
+				tempHashMap = explore.get(j).getHashMap();
+			}
+
+		}
+
+		hashMap = new HashMap<Coordinate, GuiCell>(tempHashMap);
+
+		System.out.println("Done sa algo");
 
 	}
 
@@ -337,7 +439,9 @@ public class hexgame {
 					// if (board[i][j] > 0) hexmech.fillHex(i,j,COLOURTWO,
 					// board[i][j],g2);
 
-					hexmech.fillHex(i, j, Integer.toString(board[i][j].getValue())+ " "+ Integer.toString(i) + Integer.toString(j), g2);
+					hexmech.fillHex(i, j,
+							Integer.toString(board[i][j].getValue()) + " " + Integer.toString(i) + Integer.toString(j),
+							g2);
 				}
 			}
 
@@ -549,10 +653,16 @@ public class hexgame {
 					else if (board[p.x][p.y].getOwner() == free && isHolding == true) {
 						int oldX = Integer.parseInt(lblxcoord.getText());
 						int oldY = Integer.parseInt(lblycoord.getText());
+//<<<<<<< HEAD
 						Coordinate oldCoordinate =  new Coordinate(oldX, oldY);
 						Coordinate newCoordinate =  new Coordinate(p.x, p.y);
-						if (validPlace(oldCoordinate, newCoordinate)/*oldX - p.x == oldY - p.y || p.x - oldX == oldY - p.y || oldX - p.x == p.y - oldY
-								|| p.x - oldX == p.y - oldY || oldX == p.x*/) {
+						if (validPlace(oldCoordinate, newCoordinate)) {
+/*=======
+
+						// if (oldX - p.x == oldY - p.y || p.x - oldX == oldY -
+						// p.y || oldX - p.x == p.y - oldY
+						// || p.x - oldX == p.y - oldY || oldX == p.x) {
+>>>>>>> master*/
 
 							hashMap.replace(new Coordinate(p.x, p.y), new GuiCell(holding, player));
 

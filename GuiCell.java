@@ -23,6 +23,21 @@ public class GuiCell {
 		owner = value2.owner;
 	}
 
+	
+	@Override
+	public boolean equals(Object o) {
+		GuiCell s = (GuiCell) o;
+		if (value != s.getValue()) {
+			return false;
+		}
+
+		if (owner != s.getOwner()) {
+			return false;
+		}
+
+		return true;
+	}
+	
 	public int getValue() {
 		return value;
 	}
