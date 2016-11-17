@@ -81,48 +81,70 @@ public class State {
 	//
 	// }
 
-	public void computeScore() {
-
-		int sum = 0;
-
-		System.out.println("Compute score eto: ");
-		System.out.println("AI: " +aiScore());
-		System.out.println("PLayer: " + playerScore());
-		if (aiScore() < playerScore()) {
-			sum = aiScore();
+	private ArrayList<Coordinate> getAICells(){
+		ArrayList<Coordinate> aiCells = new ArrayList<>();
+		for(Map.Entry<Coordinate, GuiCell> entry:hashMap.entrySet()){
+			if(entry.getValue().getOwner() == ai)
+				aiCells.add(entry.getKey());
 		}
-		else{
-			sum = 1;
-		}
-
-		score= sum;
-		
-		childrenLeft = level;
-		propagateScore();
+		return aiCells;
 	}
 
-	public int aiScore() {
-		int sum = 0;
-		for (int i = 0; i < hexgame.BSIZE; i++) {
-			for (int j = 0; j < hexgame.BSIZE; j++) {
-				if (hashMap.get(new Coordinate(i, j)).getOwner() == ai) {
-					sum++;
-				}
-			}
+	private ArrayList<Coordinate> getPlayerCells(){
+		ArrayList<Coordinate> playerCells = new ArrayList<>();
+		for(Map.Entry<Coordinate, GuiCell> entry:hashMap.entrySet()){
+			if(entry.getValue().getOwner() == player)
+				playerCells.add(entry.getKey());
 		}
-		return sum;
+		return playerCells;
 	}
 
-	public int playerScore() {
-		int sum = 0;
-		for (int i = 0; i < hexgame.BSIZE; i++) {
-			for (int j = 0; j < hexgame.BSIZE; j++) {
-				if (hashMap.get(new Coordinate(i, j)).getOwner() == player) {
-					sum++;
-				}
+	public int computeScore() {
+
+//		int sum = 0;
+//
+//		System.out.println("Compute score eto: ");
+//		System.out.println("AI: " +aiScore());
+//		System.out.println("PLayer: " + playerScore());
+//		if (aiScore() < playerScore()) {
+//			sum = aiScore();
+//		}
+//		else{
+//			sum = 1;
+//		}
+//
+//		score= sum;
+//
+//		childrenLeft = level;
+//		propagateScore();
+		int score = 0;
+		ArrayList<Coordinate> aiCells = getAICells();
+		ArrayList<Coordinate> playerCells =  getPlayerCells();
+		ArrayList<Coordinate> aiSurroundingCells = new ArrayList<>();
+		ArrayList<Coordinate> playerSurroundingCells = new ArrayList<>();
+		//check the 6 cell neighbors in each AI cell
+		for(Coordinate c:aiCells){
+			aiSurroundingCells = c.getSurroundingCoordinates();
+			for(Coordinate surroundingCell:aiSurroundingCells){
+				if(hashMap.get(surroundingCell).getOwner() == player && hashMap.get(c).getValue() > 1)
+					score--;// decrement the score per each neighboring rival hexagon is found
 			}
 		}
-		return sum;
+
+
+//		for(Coordinate c:playerCells){
+//			playerSurroundingCells = c.getSurroundingCoordinates();
+//			for(Coordinate surroundingCell: playerSurroundingCells){
+//				System.out.println("surrounding: " + surroundingCell.getX() + " " + surroundingCell.getY());
+//				if(hashMap.get(surroundingCell).getOwner() == ai){
+//					System.out.println("Found stuff");
+//					score++;
+//				}
+//			}
+//		}
+		return score;
+
+
 	}
 
 	public void propagateScore() {

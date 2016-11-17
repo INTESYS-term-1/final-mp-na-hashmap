@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 
 public class Coordinate {
 
@@ -104,6 +105,31 @@ public class Coordinate {
 			this.setY(this.getY()+1);
 		}
 		return this;
+	}
+	public ArrayList<Coordinate> getSurroundingCoordinates(){
+		ArrayList<Coordinate> surroundingCoordinates = new ArrayList<>();
+		Coordinate newCoor = new Coordinate(this.getX(), this.getY());
+
+		surroundingCoordinates.add(newCoor.goUp());
+		newCoor = new Coordinate(this.getX(), this.getY());
+//		this.goDown();
+		surroundingCoordinates.add(newCoor.goDown());
+		newCoor = new Coordinate(this.getX(), this.getY());
+//		this.goUp();
+		surroundingCoordinates.add(newCoor.goLeftUp());
+		newCoor = new Coordinate(this.getX(), this.getY());
+//		this.goRightDown();
+		surroundingCoordinates.add(newCoor.goLeftDown());
+		newCoor = new Coordinate(this.getX(), this.getY());
+//		this.goRightUp();
+		surroundingCoordinates.add(newCoor.goRightUp());
+		newCoor = new Coordinate(this.getX(), this.getY());
+//		this.goLeftDown();
+		surroundingCoordinates.add(newCoor.goRightDown());
+
+//		this.goLeftUp();
+
+		return surroundingCoordinates;
 	}
 
 }

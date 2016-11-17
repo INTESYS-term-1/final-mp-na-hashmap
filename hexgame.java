@@ -332,8 +332,11 @@ public class hexgame {
 				//
 				// System.out.println("Size of state: " + states.size());
 				// updateBoard();
+				Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>(hashMap);
 
-				algorithm();
+				State currState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), null, ai, 0);
+				System.out.println("SCORE: " + currState.computeScore());
+				//algorithm();
 				// createAndShowGUI();
 			}
 		});
