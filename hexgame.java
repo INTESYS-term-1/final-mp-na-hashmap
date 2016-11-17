@@ -244,7 +244,7 @@ public class hexgame {
 	}
 
 	public void initializeAISheeps() {
-		hashMap.put(new Coordinate(4, 4), new GuiCell(numberOfSheepsPerPlayer, ai));
+		hashMap.put(new Coordinate(4, 6), new GuiCell(numberOfSheepsPerPlayer, ai));
 		// hashMap.put(new Coordinate(4, 1), new
 		// GuiCell(numberOfSheepsPerPlayer, ai));
 		//
@@ -331,13 +331,25 @@ public class hexgame {
 				// GuiCell>(states.get(0).hashMap);
 				//
 				// System.out.println("Size of state: " + states.size());
-				// updateBoard();
-				Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>(hashMap);
-
-				State currState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), null, ai, 0);
-				System.out.println("SCORE: " + currState.computeScore());
+//				// updateBoard();
+				
+				
+				
+//				Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>(hashMap);
+//
+				State currState = new State(new HashMap<Coordinate, GuiCell>(hashMap), null, ai, 0);
+//				System.out.println("SCORE: " + currState.computeScore());
+				
+				
 				//algorithm();
 				// createAndShowGUI();
+				
+				
+				hashMap = new HashMap(currState.getAttackingCoordinate().getHashMap());
+				
+				splitPane.repaint();
+				
+				
 			}
 		});
 
