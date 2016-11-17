@@ -1,4 +1,3 @@
-
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
@@ -13,9 +12,9 @@ import net.miginfocom.swing.MigLayout;
 /**********************************
  * This is the main class of a Java program to play a game based on hexagonal
  * tiles. The mechanism of handling hexes is in the file hexmech.java.
- * 
+ *
  * Written by: M.H. Date: December 2012
- * 
+ *
  ***********************************/
 
 public class hexgame {
@@ -38,7 +37,6 @@ public class hexgame {
 	final static Color COLOURGRID = Color.BLACK;
 	final static Color COLOURONE = Color.green;
 	final static Color COLOURONETXT = Color.WHITE;
-
 	final static Color COLOURTWO = Color.RED;
 	final static Color COLOURTWOTXT = Color.WHITE;
 
@@ -48,6 +46,17 @@ public class hexgame {
 	final static Color COLOURFOUR = Color.BLACK;
 	final static Color COLOURFOURTXT = Color.BLACK;
 
+	// for cell direction
+	final static int UP = 0;
+	final static int DOWN = 1;
+	final static int LEFT_UP = 2;
+	final static int LEFT_DOWN = 3;
+	final static int RIGHT_UP = 4;
+	final static int RIGHT_DOWN = 5;
+
+
+
+
 	// final static Color COLOURTWO = new Color(0,0,0,200);
 
 	final static int EMPTY = 1;
@@ -55,9 +64,9 @@ public class hexgame {
 	final static int HEXSIZE = 75; // hex size in pixels
 	final static int BORDERS = 15;
 	final static int SCRSIZE = HEXSIZE * (BSIZE + 1) + BORDERS * 3; // screen
-																	// size
-																	// (vertical
-																	// dimension).
+	// size
+	// (vertical
+	// dimension).
 
 	// variables natin
 	JSplitPane splitPane;
@@ -67,10 +76,10 @@ public class hexgame {
 	Boolean isHolding = false;
 	int holding = 0;
 
-	int player = -1;
-	int free = 0;
-	int ai = 1;
-	int wall = -99;
+	static int player = -1;
+	static int free = 0;
+	static int ai = 1;
+	static int wall = -99;
 
 	Map<Coordinate, GuiCell> hashMap = new HashMap<Coordinate, GuiCell>();
 
@@ -90,7 +99,7 @@ public class hexgame {
 		hexmech.setXYasVertex(false); // RECOMMENDED: leave this as FALSE.
 
 		hexmech.setHeight(HEXSIZE); // Either setHeight or setSize must be run
-									// to initialize the hex
+		// to initialize the hex
 		hexmech.setBorders(BORDERS);
 
 		for (int i = 0; i < BSIZE; i++) {
@@ -149,8 +158,32 @@ public class hexgame {
 		// board[3][2] = 'D';
 
 		// displayBoardConsole();
+/*
+<<<<<<< HEAD
+		for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
+			Coordinate key = new Coordinate(entry.getKey());
+			GuiCell temp = new GuiCell(entry.getValue());
+			// Tab tab = entry.getValue();
+			// do something with key and/or tab
+			hashMap2.put(key, temp);
+		}
 
-		// displayBoardConsole();
+		;
+		State state = new State(new HashMap(hashMap2), null, ai, 0);
+		ArrayList<State> states = state.generateStates();
+
+
+
+//		System.out.println("----------------------------");
+//		for (int i = 0; i < states.size(); i++) {
+//			states.get(i).print();
+//		}
+
+//		hashMap = states.get(states.size()-1).getHashMap();
+		updateBoard();
+=======*/
+//>>>>>>> master
+		// displ3ayBoardConsole();
 
 	}
 
@@ -417,7 +450,143 @@ public class hexgame {
 		}
 
 		class MyMouseListener extends MouseAdapter { // inner class inside
-														// DrawingPanel
+			// DrawingPanel
+			private boolean isAtEnd(Coordinate oldPoint, Coordinate newPoint, int direction){
+				switch(direction){
+					case DOWN:
+						do{ // down
+							oldPoint.goDown();
+							if(!hashMap.containsKey(oldPoint))
+								break;
+						}while(hashMap.get(oldPoint).getOwner() == free);
+						oldPoint.goUp();
+						if(oldPoint.equals(newPoint))
+							return true;
+						break;
+					case UP:
+						do{// going up
+							oldPoint.goUp();
+							if(!hashMap.containsKey(oldPoint))
+								break;
+						}while(hashMap.get(oldPoint).getOwner() ==  free);
+						oldPoint.goDown();
+						if(oldPoint.equals(newPoint))
+							return true;
+						break;
+					case LEFT_DOWN:
+						do{// lower left diagonal
+							oldPoint.goLeftDown();
+							if(!hashMap.containsKey(oldPoint))
+								break;
+						}while(hashMap.get(oldPoint).getOwner() ==  free);
+						oldPoint.goRightUp();
+						if(oldPoint.equals(newPoint))
+							return true;
+						break;
+					case LEFT_UP:
+						do{// upper left diagonal
+							oldPoint.goLeftUp();
+							if(!hashMap.containsKey(oldPoint))
+								break;
+						}while(hashMap.get(oldPoint).getOwner() ==  free);
+						oldPoint.goRightDown();
+						if(oldPoint.equals(newPoint))
+							return true;
+						break;
+					case RIGHT_UP:
+						do{//upper right diagonal
+							oldPoint.goRightUp();
+							if(!hashMap.containsKey(oldPoint))
+								break;
+						}while(hashMap.get(oldPoint).getOwner() ==  free);
+						oldPoint.goLeftDown();
+
+						if(oldPoint.equals(newPoint))
+							return true;
+						break;
+					case RIGHT_DOWN:
+						do{//lower right diagonal
+							oldPoint.goRightDown();
+							if(!hashMap.containsKey(oldPoint))
+								break;
+						}while(hashMap.get(oldPoint).getOwner() ==  free);
+						oldPoint.goLeftUp();
+						if(oldPoint.equals(newPoint))
+							return true;
+						break;
+				}
+				return false;
+			}
+			private boolean validPlace(Coordinate old, Coordinate newPoint){
+				Coordinate oldPoint = new Coordinate(old.getX(), old.getY());
+
+				do{ // down
+					oldPoint.goDown();
+					if(oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, DOWN)) {
+						return true;
+					}
+					if(!hashMap.containsKey(oldPoint))
+						break;
+				}while(hashMap.get(oldPoint).getOwner() == free);
+
+				oldPoint = new Coordinate(old.getX(), old.getY());
+
+				do{//lower right diagonal
+					oldPoint.goRightDown();
+					if(oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, RIGHT_DOWN)) {
+						return true;
+					}
+					if(!hashMap.containsKey(oldPoint))
+						break;
+				}while(hashMap.get(oldPoint).getOwner() ==  free);
+
+				oldPoint = new Coordinate(old.getX(), old.getY());
+
+				do{//upper right diagonal
+					oldPoint.goRightUp();
+					if(oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, RIGHT_UP)) {
+						return true;
+					}
+					if(!hashMap.containsKey(oldPoint))
+						break;
+				}while(hashMap.get(oldPoint).getOwner() ==  free);
+
+				oldPoint = new Coordinate(old.getX(), old.getY());
+
+				do{// going up
+					oldPoint.goUp();
+					if(oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, UP)) {
+						return true;
+					}
+					if(!hashMap.containsKey(oldPoint))
+						break;
+				}while(hashMap.get(oldPoint).getOwner() ==  free);
+
+				oldPoint = new Coordinate(old.getX(), old.getY());
+
+				do{// upper left diagonal
+					oldPoint.goLeftUp();
+					if(oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, LEFT_UP)){
+						return true;
+					}
+					if(!hashMap.containsKey(oldPoint))
+						break;
+				}while(hashMap.get(oldPoint).getOwner() ==  free);
+
+				oldPoint = new Coordinate(old.getX(), old.getY());
+
+				do {// lower left diagonal
+					oldPoint.goLeftDown();
+					if(oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, LEFT_DOWN)){
+
+						return true;
+					}
+					if(!hashMap.containsKey(oldPoint))
+						break;
+				}while (hashMap.get(oldPoint).getOwner() == free);
+				JOptionPane.showMessageDialog(null, "Can't place sheep there.", "Sorry", JOptionPane.INFORMATION_MESSAGE);
+				return false;
+			}
 			public void mouseClicked(MouseEvent e) {
 				// mPt.x = x;
 				// mPt.y = y;
@@ -484,22 +653,28 @@ public class hexgame {
 					else if (board[p.x][p.y].getOwner() == free && isHolding == true) {
 						int oldX = Integer.parseInt(lblxcoord.getText());
 						int oldY = Integer.parseInt(lblycoord.getText());
+//<<<<<<< HEAD
+						Coordinate oldCoordinate =  new Coordinate(oldX, oldY);
+						Coordinate newCoordinate =  new Coordinate(p.x, p.y);
+						if (validPlace(oldCoordinate, newCoordinate)) {
+/*=======
 
 						// if (oldX - p.x == oldY - p.y || p.x - oldX == oldY -
 						// p.y || oldX - p.x == p.y - oldY
 						// || p.x - oldX == p.y - oldY || oldX == p.x) {
+>>>>>>> master*/
 
-						hashMap.replace(new Coordinate(p.x, p.y), new GuiCell(holding, player));
+							hashMap.replace(new Coordinate(p.x, p.y), new GuiCell(holding, player));
 
-						isHolding = false;
-						holding = 0;
-						lblSheepAtHand.setText("none");
-						lblxcoord.setText("none");
-						lblycoord.setText("none");
-						updateBoard();
+							isHolding = false;
+							holding = 0;
+							lblSheepAtHand.setText("none");
+							lblxcoord.setText("none");
+							lblycoord.setText("none");
+							updateBoard();
 
-						System.out.println("CANGED");
-						// }
+							System.out.println("CANGED");
+						}
 					}
 
 					else if (board[p.x][p.y].getOwner() == ai) {
@@ -522,6 +697,7 @@ public class hexgame {
 
 				repaint();
 			}
+
 
 		} // end of MyMouseListener class
 	} // end of DrawingPanel class
