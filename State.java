@@ -142,6 +142,21 @@ public class State {
 //				}
 //			}
 //		}
+
+		Coordinate biggestPlayerStack =playerCells.get(0);
+		for(Coordinate c:playerCells){
+			if(hashMap.get(c).getValue() > hashMap.get(biggestPlayerStack).getValue()){
+				biggestPlayerStack = c;
+
+			}
+		}
+		for(Coordinate c:playerCells){
+
+			if(hashMap.get(c).getValue() > biggestPlayerStack){
+			//check for ai stack than can make tabi
+
+			}
+		}
 		return score;
 
 
