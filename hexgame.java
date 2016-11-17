@@ -244,7 +244,7 @@ public class hexgame {
 	}
 
 	public void initializeAISheeps() {
-		hashMap.put(new Coordinate(4, 6), new GuiCell(numberOfSheepsPerPlayer, ai));
+		hashMap.put(new Coordinate(2,4), new GuiCell(numberOfSheepsPerPlayer, ai));
 		// hashMap.put(new Coordinate(4, 1), new
 		// GuiCell(numberOfSheepsPerPlayer, ai));
 		//
