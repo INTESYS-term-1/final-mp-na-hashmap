@@ -53,7 +53,7 @@ public class State {
 		this.parentState = parent;
 		this.currentTurn = nextTurn;
 		this.level = level;
-		childrenLeft = level;
+		childrenLeft = 2;
 
 	}
 
@@ -117,7 +117,7 @@ public class State {
 		return playerCells;
 	}
 
-	public int computeScore() {
+	public void computeScore() {
 
 		// int sum = 0;
 		//
@@ -135,20 +135,34 @@ public class State {
 		//
 		// childrenLeft = level;
 		// propagateScore();
-		int score = 0;
-		ArrayList<Coordinate> aiCells = getAICells();
-		ArrayList<Coordinate> playerCells = getPlayerCells();
-		ArrayList<Coordinate> aiSurroundingCells = new ArrayList<>();
-		ArrayList<Coordinate> playerSurroundingCells = new ArrayList<>();
-		// check the 6 cell neighbors in each AI cell
-		for (Coordinate c : aiCells) {
-			aiSurroundingCells = c.getSurroundingCoordinates();
-			for (Coordinate surroundingCell : aiSurroundingCells) {
-				if (hashMap.get(surroundingCell).getOwner() == player && hashMap.get(c).getValue() > 1)
-					score--;// decrement the score per each neighboring rival
-							// hexagon is found
-			}
-		}
+
+		// for (Coordinate c : playerCells) {
+		// playerSurroundingCells = c.getSurroundingCoordinates();
+		// for (Coordinate surroundingCell : playerSurroundingCells) {
+		// System.out.println("surrounding: " + surroundingCell.getX() + " " +
+		// surroundingCell.getY());
+		// if (hashMap.get(surroundingCell).getOwner() == ai) {
+		// System.out.println("Found stuff");
+		// score++;
+		// }
+		// }
+		// }
+
+		//
+		// ArrayList<Coordinate> aiCells = getAICells();
+		// ArrayList<Coordinate> playerCells = getPlayerCells();
+		// ArrayList<Coordinate> aiSurroundingCells = new ArrayList<>();
+		// ArrayList<Coordinate> playerSurroundingCells = new ArrayList<>();
+		// // check the 6 cell neighbors in each AI cell
+		// for (Coordinate c : aiCells) {
+		// aiSurroundingCells = c.getSurroundingCoordinates();
+		// for (Coordinate surroundingCell : aiSurroundingCells) {
+		// if (hashMap.get(surroundingCell).getOwner() == player &&
+		// hashMap.get(c).getValue() > 1)
+		// score--;// decrement the score per each neighboring rival
+		// // hexagon is found
+		// }
+		// }
 
 		// for(Coordinate c:playerCells){
 		// playerSurroundingCells = c.getSurroundingCoordinates();
@@ -161,21 +175,47 @@ public class State {
 		// }
 		// }
 		// }
+		//
+		// Coordinate biggestPlayerStack = playerCells.get(0);
+		// for (Coordinate c : playerCells) {
+		// if (hashMap.get(c).getValue() >
+		// hashMap.get(biggestPlayerStack).getValue()) {
+		// biggestPlayerStack = c;
+		//
+		// }
+		// }
+		// for (Coordinate c : playerCells) {
+		// }
+		//
+		// // check for ai stack na pwede palibutan ang biggest stack ng player.
+		//
+		// // functioncall
 
-		Coordinate biggestPlayerStack = playerCells.get(0);
-		for (Coordinate c : playerCells) {
-			if (hashMap.get(c).getValue() > hashMap.get(biggestPlayerStack).getValue()) {
-				biggestPlayerStack = c;
+		int score = 0;
+		ArrayList<Coordinate> aiCells = getAICells();
+		ArrayList<Coordinate> playerCells = getPlayerCells();
+		ArrayList<Coordinate> aiSurroundingCells = new ArrayList<>();
+		ArrayList<Coordinate> playerSurroundingCells = new ArrayList<>();
 
+		// score of AI
+		if (currentTurn == ai) {
+			for (Coordinate c : playerCells) {
+				for (Coordinate surroundingCell : aiSurroundingCells) {
+					score++;
+				}
 			}
 		}
-		for (Coordinate c : playerCells) {
+		// score of player
+		else {
+			for (Coordinate c : aiCells) {
+				for (Coordinate surroundingCell : playerSurroundingCells) {
+					score++;
+				}
+			}
 		}
 
-		// check for ai stack na pwede palibutan ang biggest stack ng player.
-
-		// functioncall
-		return score;
+		score = 10;
+		propagateScore();
 
 	}
 
@@ -475,8 +515,7 @@ public class State {
 		ArrayList<Integer> visitedRandom = new ArrayList<Integer>();
 		Random rand = new Random();
 
-		
-		 int value = 1 + rand.nextInt((6 - 1) + 1);
+		int value = 1 + rand.nextInt((6 - 1) + 1);
 
 		State randomState;
 
@@ -569,21 +608,18 @@ public class State {
 
 			if (visitedRandom.size() == 6) {
 				decreasingAICells.remove(getBiggestAIStack());
-				
-				for(int i = 0; i<decreasingAICells.size(); i++){
-					if(hashMap.get(decreasingAICells.get(i)).getValue()==1){
+
+				for (int i = 0; i < decreasingAICells.size(); i++) {
+					if (hashMap.get(decreasingAICells.get(i)).getValue() == 1) {
 						decreasingAICells.remove(i);
 					}
 				}
 				visitedRandom = new ArrayList<Integer>();
 			}
 		}
-		
-		
-	
+
 		return null;
-		
-		
+
 	}
 
 	public State randomLeftDiagonalUp() {
@@ -1116,9 +1152,7 @@ public class State {
 
 			}
 		} // left diagonal down
-		
-		
-		
+
 		return null;
 	}
 
@@ -1273,8 +1307,19 @@ public class State {
 	}
 
 	public void propagateScore() {
-		if (parentState != null && childrenLeft == 0)
+//		if (parentState != null && level== 2){
+//			parentState.submit(this);
+//			System.out.println("------------------------------PLEASE-----------------------------------------------------------------");
+//
+//		}
+		
+		
+		if(parentState!= null){
 			parentState.submit(this);
+		}
+		System.out.println("------------------------------PLEASE-----------------------------------------------------------------");
+
+	
 	}
 
 	public void submit(State s) {

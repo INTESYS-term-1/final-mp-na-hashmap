@@ -335,20 +335,20 @@ public class hexgame {
 				// createAndShowGUI();
 
 				try {
-//					hashMap = new HashMap(currState.getAttackingCoordinate().getHashMap());
-//					System.out.println("Null try catch");
-//					
-//					int numberOfAIValue1 = 0;
-//					int numberOfPlayerValue1 = 0;
-//				
-					
+					// hashMap = new
+					// HashMap(currState.getAttackingCoordinate().getHashMap());
+					//
+					// int numberOfAIValue1 = 0;
+					// int numberOfPlayerValue1 = 0;
+					//
+					algorithm();
 
-					
-					if(currState.generateStates().size()==0){
+					if (currState.generateStates().size() == 0) {
 						createAndShowGUI();
 					}
-					
+
 				} catch (Exception e) {
+					System.out.println("sana gumana algo----------------");
 					algorithm();
 				}
 
@@ -380,9 +380,13 @@ public class hexgame {
 		int i = 0;
 
 		while (i < explore.size()) {
-			System.out.println("I: " + i);
-			System.out.println("Size: " + explore.size());
-			System.out.println("Triggered algo");
+			if (currState.getLevel() == 3) {
+				break;
+			}
+//			System.out.println("I: " + i);
+//			System.out.println("Size: " + explore.size());
+//			System.out.println("Triggered algo");
+//			System.out.println("------------Current state level: " + currState.getLevel());
 			currState = explore.get(i);
 			visited.add(currState);
 
@@ -402,7 +406,7 @@ public class hexgame {
 		}
 
 		for (int m = 0; m < explore.size(); m++) {
-			if (explore.get(m).generateStates().size() == 0) {
+			if (explore.get(m).getLevel() >= 2) {
 				explore.get(m).computeScore();
 
 				System.out.println("Nagcompute at size:" + m);
@@ -411,13 +415,17 @@ public class hexgame {
 
 		int maxScore = explore.get(0).getScore();
 
-		Map<Coordinate, GuiCell> tempHashMap = new HashMap<Coordinate, GuiCell>(explore.get(0).getHashMap());
+		Map<Coordinate, GuiCell> tempHashMap = null;
 
 		for (int j = 1; j < explore.size(); j++) {
-			if (explore.get(j).getScore() >= maxScore && explore.get(j).getLevel() == 4) {
+			if (explore.get(j).getScore() >= maxScore && explore.get(j).getLevel()==2) {
 				maxScore = explore.get(j).getScore();
 				System.out.println("last loop: " + explore.get(j).getScore());
+
+//				explore.get(j).print();
+
 				tempHashMap = explore.get(j).getHashMap();
+				System.out.println("Score: " + explore.get(j).getScore());
 			}
 
 		}
@@ -425,6 +433,10 @@ public class hexgame {
 		hashMap = new HashMap<Coordinate, GuiCell>(tempHashMap);
 
 		System.out.println("Done sa algo");
+
+		
+		splitPane.repaint();
+		splitPane.revalidate();
 
 	}
 
