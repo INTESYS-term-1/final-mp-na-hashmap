@@ -3,6 +3,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
 
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 
@@ -448,8 +449,68 @@ public class State {
 
 		}
 
-		return randomRightDiagonalUp();
+		// return randomRightDiagonalUp();
 
+		// insert random
+
+		ArrayList<Integer> visitedRandom = new ArrayList<Integer>();
+		Random rand = new Random();
+
+		int value = rand.nextInt(6);
+
+		State randomState;
+
+		Boolean isFound = false;
+		while (!isFound && !visitedRandom.contains(value)) {
+
+			switch (value) {
+			case 1:
+				randomState = randomLeftDiagonalUp();
+
+				if (randomState != null) {
+					return randomState;
+				}
+
+			case 2:
+				randomState = randomRightDiagonalDown();
+
+				if (randomState != null) {
+					return randomState;
+				}
+			case 3:
+				randomState = randomRightDiagonalUp();
+
+				if (randomState != null) {
+					return randomState;
+				}
+			case 4:
+				randomState = randomLeftDiagonalDown();
+
+				if (randomState != null) {
+					return randomState;
+				}
+
+			case 5:
+				randomState = randomUp();
+
+				if (randomState != null) {
+					return randomState;
+				}
+			case 6:
+				randomState = randomDown();
+
+				if (randomState != null) {
+					return randomState;
+				}
+			}
+
+			rand = new Random();
+
+			if (visitedRandom.size() == 6) {
+				// other return shit
+			}
+		}
+		return null;
 	}
 
 	public State randomLeftDiagonalUp() {
@@ -524,15 +585,12 @@ public class State {
 			}
 		} // end of left diagonal up
 
-		
 		///////////////////////////////////////////////////
-		
-		
-		
-		 magicNumberSlash = 1;
-		 magicNumberBackSlash = 0;
 
-		 biggestAIStack = null;
+		magicNumberSlash = 1;
+		magicNumberBackSlash = 0;
+
+		biggestAIStack = null;
 		for (Coordinate c : aiCells) {
 			if (biggestAIStack == null)
 				biggestAIStack = c;
@@ -541,8 +599,8 @@ public class State {
 			}
 		}
 
-		 row = biggestAIStack.getX();
-		 column = biggestAIStack.getY();
+		row = biggestAIStack.getX();
+		column = biggestAIStack.getY();
 
 		// // left diagonal UP
 		if (row % 2 == 1) {
@@ -596,7 +654,7 @@ public class State {
 				k--;
 			}
 		} // end of left diagonal up
-		
+
 		return null;
 
 	}
