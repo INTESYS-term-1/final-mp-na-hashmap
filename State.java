@@ -30,6 +30,23 @@ public class State {
 	ArrayList<State> states;
 	ArrayList<State> statesTemp = new ArrayList<State>();
 
+	ArrayList<Coordinate> decreasingAICells;
+
+	public Coordinate getBiggestAIStack() {
+		Coordinate biggestAIStack = null;
+
+		for (Coordinate c : decreasingAICells) {
+			if (biggestAIStack == null)
+				biggestAIStack = c;
+			else if (hashMap.get(c).getValue() > hashMap.get(biggestAIStack).getValue()
+					&& hashMap.get(biggestAIStack).getValue() < 2) {
+				biggestAIStack = c;
+			}
+		}
+		return biggestAIStack;
+
+	}
+
 	public State(Map<Coordinate, GuiCell> hashMap, State parent, int nextTurn, int level) {
 
 		this.hashMap = new HashMap(hashMap);
@@ -453,15 +470,24 @@ public class State {
 
 		// insert random
 
+		decreasingAICells = getAICells();
+
 		ArrayList<Integer> visitedRandom = new ArrayList<Integer>();
 		Random rand = new Random();
 
-		int value = rand.nextInt(6);
+		
+		 int value = 1 + rand.nextInt((6 - 1) + 1);
 
 		State randomState;
 
 		Boolean isFound = false;
-		while (!isFound && !visitedRandom.contains(value)) {
+		while (!isFound && !visitedRandom.contains(value) && decreasingAICells.size() > 0) {
+
+			System.out.println("Random");
+			System.out.println("Decreasing size: " + decreasingAICells.size());
+			System.out.println("size of visited: " + visitedRandom.size());
+
+			System.out.println("Value:  " + value);
 
 			switch (value) {
 			case 1:
@@ -471,18 +497,36 @@ public class State {
 					return randomState;
 				}
 
+				visitedRandom.add(value);
+				System.out.println();
+				System.out.println("else sa: " + value);
+				System.out.println();
+				break;
+
 			case 2:
 				randomState = randomRightDiagonalDown();
 
 				if (randomState != null) {
 					return randomState;
 				}
+
+				visitedRandom.add(value);
+				System.out.println();
+				System.out.println("else sa: " + value);
+				System.out.println();
+				break;
 			case 3:
 				randomState = randomRightDiagonalUp();
 
 				if (randomState != null) {
 					return randomState;
 				}
+
+				visitedRandom.add(value);
+				System.out.println();
+				System.out.println("else sa: " + value);
+				System.out.println();
+				break;
 			case 4:
 				randomState = randomLeftDiagonalDown();
 
@@ -490,38 +534,63 @@ public class State {
 					return randomState;
 				}
 
+				visitedRandom.add(value);
+				System.out.println();
+				System.out.println("else sa: " + value);
+				System.out.println();
+				break;
+
 			case 5:
 				randomState = randomUp();
 
 				if (randomState != null) {
 					return randomState;
 				}
+				visitedRandom.add(value);
+				System.out.println();
+				System.out.println("else sa: " + value);
+				System.out.println();
+				break;
 			case 6:
 				randomState = randomDown();
 
 				if (randomState != null) {
 					return randomState;
 				}
+
+				visitedRandom.add(value);
+				System.out.println();
+				System.out.println("else sa: " + value);
+				System.out.println();
+				break;
 			}
 
 			rand = new Random();
 
 			if (visitedRandom.size() == 6) {
-				// other return shit
+				decreasingAICells.remove(getBiggestAIStack());
+				
+				for(int i = 0; i<decreasingAICells.size(); i++){
+					if(hashMap.get(decreasingAICells.get(i)).getValue()==1){
+						decreasingAICells.remove(i);
+					}
+				}
+				visitedRandom = new ArrayList<Integer>();
 			}
 		}
+		
+		
+		System.out.println("null");
 		return null;
 	}
 
 	public State randomLeftDiagonalUp() {
 
-		ArrayList<Coordinate> aiCells = getAICells();
-
 		int magicNumberSlash = 1;
 		int magicNumberBackSlash = 0;
 
 		Coordinate biggestAIStack = null;
-		for (Coordinate c : aiCells) {
+		for (Coordinate c : decreasingAICells) {
 			if (biggestAIStack == null)
 				biggestAIStack = c;
 			else if (hashMap.get(c).getValue() > hashMap.get(biggestAIStack).getValue()) {
@@ -548,12 +617,10 @@ public class State {
 						&& hashMap.get(new Coordinate(k - 1, l)).getOwner() != free) {
 
 					State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap), this, player, level + 1);
-
+					int temp = hashMap.get(new Coordinate(row, column)).getValue();
 					newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
-					newState.getHashMap().get(new Coordinate(k, l))
-							.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
-					newState.getHashMap().get(new Coordinate(row, column))
-							.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
+					newState.getHashMap().get(new Coordinate(k, l)).setValue(temp / 2);
+					newState.getHashMap().get(new Coordinate(row, column)).setValue(temp - (temp / 2));
 
 					return newState;
 				} else {
@@ -566,12 +633,10 @@ public class State {
 						&& hashMap.get(new Coordinate(k - 1, l - 1)).getOwner() != free) {
 
 					State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap), this, player, level + 1);
-
+					int temp = hashMap.get(new Coordinate(row, column)).getValue();
 					newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
-					newState.getHashMap().get(new Coordinate(k, l))
-							.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
-					newState.getHashMap().get(new Coordinate(row, column))
-							.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
+					newState.getHashMap().get(new Coordinate(k, l)).setValue(temp / 2);
+					newState.getHashMap().get(new Coordinate(row, column)).setValue(temp - (temp / 2));
 
 					return newState;
 
@@ -591,7 +656,7 @@ public class State {
 		magicNumberBackSlash = 0;
 
 		biggestAIStack = null;
-		for (Coordinate c : aiCells) {
+		for (Coordinate c : decreasingAICells) {
 			if (biggestAIStack == null)
 				biggestAIStack = c;
 			else if (hashMap.get(c).getValue() >= hashMap.get(biggestAIStack).getValue()) {
@@ -618,12 +683,10 @@ public class State {
 						&& hashMap.get(new Coordinate(k - 1, l)).getOwner() != free) {
 
 					State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap), this, player, level + 1);
-
+					int temp = hashMap.get(new Coordinate(row, column)).getValue();
 					newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
-					newState.getHashMap().get(new Coordinate(k, l))
-							.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
-					newState.getHashMap().get(new Coordinate(row, column))
-							.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
+					newState.getHashMap().get(new Coordinate(k, l)).setValue(temp / 2);
+					newState.getHashMap().get(new Coordinate(row, column)).setValue(temp - (temp / 2));
 
 					return newState;
 				} else {
@@ -636,12 +699,10 @@ public class State {
 						&& hashMap.get(new Coordinate(k - 1, l - 1)).getOwner() != free) {
 
 					State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap), this, player, level + 1);
-
+					int temp = hashMap.get(new Coordinate(row, column)).getValue();
 					newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
-					newState.getHashMap().get(new Coordinate(k, l))
-							.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
-					newState.getHashMap().get(new Coordinate(row, column))
-							.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
+					newState.getHashMap().get(new Coordinate(k, l)).setValue(temp / 2);
+					newState.getHashMap().get(new Coordinate(row, column)).setValue(temp - (temp / 2));
 
 					return newState;
 
@@ -661,13 +722,11 @@ public class State {
 
 	public State randomRightDiagonalDown() {
 
-		ArrayList<Coordinate> aiCells = getAICells();
-
 		int magicNumberSlash = 1;
 		int magicNumberBackSlash = 0;
 
 		Coordinate biggestAIStack = null;
-		for (Coordinate c : aiCells) {
+		for (Coordinate c : decreasingAICells) {
 			if (biggestAIStack == null)
 				biggestAIStack = c;
 			else if (hashMap.get(c).getValue() > hashMap.get(biggestAIStack).getValue()) {
@@ -695,12 +754,11 @@ public class State {
 				} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
 						&& hashMap.get(new Coordinate(k + 1, l + 1)).getOwner() != free) {
 					State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap), this, player, level + 1);
-
+					int temp = hashMap.get(new Coordinate(row, column)).getValue();
 					newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
-					newState.getHashMap().get(new Coordinate(k, l))
-							.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
-					newState.getHashMap().get(new Coordinate(row, column))
-							.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
+					newState.getHashMap().get(new Coordinate(k, l)).setValue(temp / 2);
+					newState.getHashMap().get(new Coordinate(row, column)).setValue(temp - (temp / 2));
+
 					return newState;
 
 				} else {
@@ -713,12 +771,10 @@ public class State {
 				} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
 						&& hashMap.get(new Coordinate(k + 1, l)).getOwner() != free) {
 					State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap), this, player, level + 1);
-
+					int temp = hashMap.get(new Coordinate(row, column)).getValue();
 					newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
-					newState.getHashMap().get(new Coordinate(k, l))
-							.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
-					newState.getHashMap().get(new Coordinate(row, column))
-							.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
+					newState.getHashMap().get(new Coordinate(k, l)).setValue(temp / 2);
+					newState.getHashMap().get(new Coordinate(row, column)).setValue(temp - (temp / 2));
 
 					return newState;
 				} else {
@@ -734,7 +790,7 @@ public class State {
 		magicNumberBackSlash = 0;
 
 		biggestAIStack = null;
-		for (Coordinate c : aiCells) {
+		for (Coordinate c : decreasingAICells) {
 			if (biggestAIStack == null)
 				biggestAIStack = c;
 			else if (hashMap.get(c).getValue() >= hashMap.get(biggestAIStack).getValue()) {
@@ -762,12 +818,11 @@ public class State {
 				} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
 						&& hashMap.get(new Coordinate(k + 1, l + 1)).getOwner() != free) {
 					State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap), this, player, level + 1);
-
+					int temp = hashMap.get(new Coordinate(row, column)).getValue();
 					newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
-					newState.getHashMap().get(new Coordinate(k, l))
-							.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
-					newState.getHashMap().get(new Coordinate(row, column))
-							.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
+					newState.getHashMap().get(new Coordinate(k, l)).setValue(temp / 2);
+					newState.getHashMap().get(new Coordinate(row, column)).setValue(temp - (temp / 2));
+
 					return newState;
 
 				} else {
@@ -780,12 +835,10 @@ public class State {
 				} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
 						&& hashMap.get(new Coordinate(k + 1, l)).getOwner() != free) {
 					State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap), this, player, level + 1);
-
+					int temp = hashMap.get(new Coordinate(row, column)).getValue();
 					newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
-					newState.getHashMap().get(new Coordinate(k, l))
-							.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
-					newState.getHashMap().get(new Coordinate(row, column))
-							.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
+					newState.getHashMap().get(new Coordinate(k, l)).setValue(temp / 2);
+					newState.getHashMap().get(new Coordinate(row, column)).setValue(temp - (temp / 2));
 
 					return newState;
 				} else {
@@ -801,13 +854,11 @@ public class State {
 
 	public State randomRightDiagonalUp() {
 
-		ArrayList<Coordinate> aiCells = getAICells();
-
 		int magicNumberSlash = 1;
 		int magicNumberBackSlash = 0;
 
 		Coordinate biggestAIStack = null;
-		for (Coordinate c : aiCells) {
+		for (Coordinate c : decreasingAICells) {
 			if (biggestAIStack == null)
 				biggestAIStack = c;
 			else if (hashMap.get(c).getValue() > hashMap.get(biggestAIStack).getValue()) {
@@ -834,12 +885,10 @@ public class State {
 				if (hashMap.get(new Coordinate(k, l)).getOwner() == free
 						&& hashMap.get(new Coordinate(k + 1, l)).getOwner() != free) {
 					State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap), this, player, level + 1);
-
+					int temp = hashMap.get(new Coordinate(row, column)).getValue();
 					newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
-					newState.getHashMap().get(new Coordinate(k, l))
-							.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
-					newState.getHashMap().get(new Coordinate(row, column))
-							.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
+					newState.getHashMap().get(new Coordinate(k, l)).setValue(temp / 2);
+					newState.getHashMap().get(new Coordinate(row, column)).setValue(temp - (temp / 2));
 
 					return newState;
 
@@ -853,12 +902,10 @@ public class State {
 				} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
 						&& hashMap.get(new Coordinate(k + 1, l - 1)).getOwner() != free) {
 					State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap), this, player, level + 1);
-
+					int temp = hashMap.get(new Coordinate(row, column)).getValue();
 					newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
-					newState.getHashMap().get(new Coordinate(k, l))
-							.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
-					newState.getHashMap().get(new Coordinate(row, column))
-							.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
+					newState.getHashMap().get(new Coordinate(k, l)).setValue(temp / 2);
+					newState.getHashMap().get(new Coordinate(row, column)).setValue(temp - (temp / 2));
 
 					return newState;
 
@@ -876,7 +923,7 @@ public class State {
 		magicNumberBackSlash = 0;
 
 		biggestAIStack = null;
-		for (Coordinate c : aiCells) {
+		for (Coordinate c : decreasingAICells) {
 			if (biggestAIStack == null)
 				biggestAIStack = c;
 			else if (hashMap.get(c).getValue() >= hashMap.get(biggestAIStack).getValue()) {
@@ -903,12 +950,10 @@ public class State {
 				if (hashMap.get(new Coordinate(k, l)).getOwner() == free
 						&& hashMap.get(new Coordinate(k + 1, l)).getOwner() != free) {
 					State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap), this, player, level + 1);
-
+					int temp = hashMap.get(new Coordinate(row, column)).getValue();
 					newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
-					newState.getHashMap().get(new Coordinate(k, l))
-							.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
-					newState.getHashMap().get(new Coordinate(row, column))
-							.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
+					newState.getHashMap().get(new Coordinate(k, l)).setValue(temp / 2);
+					newState.getHashMap().get(new Coordinate(row, column)).setValue(temp - (temp / 2));
 
 					return newState;
 
@@ -922,12 +967,10 @@ public class State {
 				} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
 						&& hashMap.get(new Coordinate(k + 1, l - 1)).getOwner() != free) {
 					State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap), this, player, level + 1);
-
+					int temp = hashMap.get(new Coordinate(row, column)).getValue();
 					newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
-					newState.getHashMap().get(new Coordinate(k, l))
-							.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
-					newState.getHashMap().get(new Coordinate(row, column))
-							.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
+					newState.getHashMap().get(new Coordinate(k, l)).setValue(temp / 2);
+					newState.getHashMap().get(new Coordinate(row, column)).setValue(temp - (temp / 2));
 
 					return newState;
 
@@ -944,13 +987,11 @@ public class State {
 
 	public State randomLeftDiagonalDown() {
 
-		ArrayList<Coordinate> aiCells = getAICells();
-
 		int magicNumberSlash = 1;
 		int magicNumberBackSlash = 0;
 
 		Coordinate biggestAIStack = null;
-		for (Coordinate c : aiCells) {
+		for (Coordinate c : decreasingAICells) {
 			if (biggestAIStack == null)
 				biggestAIStack = c;
 			else if (hashMap.get(c).getValue() > hashMap.get(biggestAIStack).getValue()) {
@@ -976,12 +1017,10 @@ public class State {
 				} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
 						&& hashMap.get(new Coordinate(k - 1, l + 1)).getOwner() != free) {
 					State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap), this, player, level + 1);
-
+					int temp = hashMap.get(new Coordinate(row, column)).getValue();
 					newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
-					newState.getHashMap().get(new Coordinate(k, l))
-							.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
-					newState.getHashMap().get(new Coordinate(row, column))
-							.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
+					newState.getHashMap().get(new Coordinate(k, l)).setValue(temp / 2);
+					newState.getHashMap().get(new Coordinate(row, column)).setValue(temp - (temp / 2));
 
 					return newState;
 
@@ -997,12 +1036,10 @@ public class State {
 						&& hashMap.get(new Coordinate(k - 1, l)).getOwner() != free) {
 
 					State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap), this, player, level + 1);
-
+					int temp = hashMap.get(new Coordinate(row, column)).getValue();
 					newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
-					newState.getHashMap().get(new Coordinate(k, l))
-							.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
-					newState.getHashMap().get(new Coordinate(row, column))
-							.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
+					newState.getHashMap().get(new Coordinate(k, l)).setValue(temp / 2);
+					newState.getHashMap().get(new Coordinate(row, column)).setValue(temp - (temp / 2));
 
 					return newState;
 
@@ -1019,7 +1056,7 @@ public class State {
 		magicNumberBackSlash = 0;
 
 		biggestAIStack = null;
-		for (Coordinate c : aiCells) {
+		for (Coordinate c : decreasingAICells) {
 			if (biggestAIStack == null)
 				biggestAIStack = c;
 			else if (hashMap.get(c).getValue() >= hashMap.get(biggestAIStack).getValue()) {
@@ -1045,12 +1082,10 @@ public class State {
 				} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
 						&& hashMap.get(new Coordinate(k - 1, l + 1)).getOwner() != free) {
 					State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap), this, player, level + 1);
-
+					int temp = hashMap.get(new Coordinate(row, column)).getValue();
 					newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
-					newState.getHashMap().get(new Coordinate(k, l))
-							.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
-					newState.getHashMap().get(new Coordinate(row, column))
-							.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
+					newState.getHashMap().get(new Coordinate(k, l)).setValue(temp / 2);
+					newState.getHashMap().get(new Coordinate(row, column)).setValue(temp - (temp / 2));
 
 					return newState;
 
@@ -1066,12 +1101,10 @@ public class State {
 						&& hashMap.get(new Coordinate(k - 1, l)).getOwner() != free) {
 
 					State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap), this, player, level + 1);
-
+					int temp = hashMap.get(new Coordinate(row, column)).getValue();
 					newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
-					newState.getHashMap().get(new Coordinate(k, l))
-							.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
-					newState.getHashMap().get(new Coordinate(row, column))
-							.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
+					newState.getHashMap().get(new Coordinate(k, l)).setValue(temp / 2);
+					newState.getHashMap().get(new Coordinate(row, column)).setValue(temp - (temp / 2));
 
 					return newState;
 
@@ -1086,10 +1119,8 @@ public class State {
 
 	public State randomUp() {
 
-		ArrayList<Coordinate> aiCells = getAICells();
-
 		Coordinate biggestAIStack = null;
-		for (Coordinate c : aiCells) {
+		for (Coordinate c : decreasingAICells) {
 			if (biggestAIStack == null)
 				biggestAIStack = c;
 			else if (hashMap.get(c).getValue() > hashMap.get(biggestAIStack).getValue()) {
@@ -1107,12 +1138,10 @@ public class State {
 			} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
 					&& hashMap.get(new Coordinate(k, l - 1)).getOwner() != free) {
 				State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap), this, player, level + 1);
-
+				int temp = hashMap.get(new Coordinate(row, column)).getValue();
 				newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
-				newState.getHashMap().get(new Coordinate(k, l))
-						.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
-				newState.getHashMap().get(new Coordinate(row, column))
-						.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
+				newState.getHashMap().get(new Coordinate(k, l)).setValue(temp / 2);
+				newState.getHashMap().get(new Coordinate(row, column)).setValue(temp - (temp / 2));
 
 				return newState;
 
@@ -1133,7 +1162,7 @@ public class State {
 		//////////////////////
 
 		biggestAIStack = null;
-		for (Coordinate c : aiCells) {
+		for (Coordinate c : decreasingAICells) {
 			if (biggestAIStack == null)
 				biggestAIStack = c;
 			else if (hashMap.get(c).getValue() >= hashMap.get(biggestAIStack).getValue()) {
@@ -1151,12 +1180,10 @@ public class State {
 			} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
 					&& hashMap.get(new Coordinate(k, l - 1)).getOwner() != free) {
 				State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap), this, player, level + 1);
-
+				int temp = hashMap.get(new Coordinate(row, column)).getValue();
 				newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
-				newState.getHashMap().get(new Coordinate(k, l))
-						.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
-				newState.getHashMap().get(new Coordinate(row, column))
-						.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
+				newState.getHashMap().get(new Coordinate(k, l)).setValue(temp / 2);
+				newState.getHashMap().get(new Coordinate(row, column)).setValue(temp - (temp / 2));
 
 				return newState;
 
@@ -1170,10 +1197,8 @@ public class State {
 
 	public State randomDown() {
 
-		ArrayList<Coordinate> aiCells = getAICells();
-
 		Coordinate biggestAIStack = null;
-		for (Coordinate c : aiCells) {
+		for (Coordinate c : decreasingAICells) {
 			if (biggestAIStack == null)
 				biggestAIStack = c;
 			else if (hashMap.get(c).getValue() > hashMap.get(biggestAIStack).getValue()) {
@@ -1192,12 +1217,10 @@ public class State {
 			} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
 					&& hashMap.get(new Coordinate(k, l + 1)).getOwner() != free) {
 				State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap), this, player, level + 1);
-
+				int temp = hashMap.get(new Coordinate(row, column)).getValue();
 				newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
-				newState.getHashMap().get(new Coordinate(k, l))
-						.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
-				newState.getHashMap().get(new Coordinate(row, column))
-						.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
+				newState.getHashMap().get(new Coordinate(k, l)).setValue(temp / 2);
+				newState.getHashMap().get(new Coordinate(row, column)).setValue(temp - (temp / 2));
 
 				return newState;
 
@@ -1210,7 +1233,7 @@ public class State {
 		/////////////////////////////
 
 		biggestAIStack = null;
-		for (Coordinate c : aiCells) {
+		for (Coordinate c : decreasingAICells) {
 			if (biggestAIStack == null)
 				biggestAIStack = c;
 			else if (hashMap.get(c).getValue() >= hashMap.get(biggestAIStack).getValue()) {
@@ -1229,12 +1252,10 @@ public class State {
 			} else if (hashMap.get(new Coordinate(k, l)).getOwner() == free
 					&& hashMap.get(new Coordinate(k, l + 1)).getOwner() != free) {
 				State newState = new State(new HashMap<Coordinate, GuiCell>(hashMap), this, player, level + 1);
-
+				int temp = hashMap.get(new Coordinate(row, column)).getValue();
 				newState.getHashMap().get(new Coordinate(k, l)).setOwner(ai);
-				newState.getHashMap().get(new Coordinate(k, l))
-						.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
-				newState.getHashMap().get(new Coordinate(row, column))
-						.setValue(hashMap.get(new Coordinate(row, column)).getValue() / 2);
+				newState.getHashMap().get(new Coordinate(k, l)).setValue(temp / 2);
+				newState.getHashMap().get(new Coordinate(row, column)).setValue(temp - (temp / 2));
 
 				return newState;
 
