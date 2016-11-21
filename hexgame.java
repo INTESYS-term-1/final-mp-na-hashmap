@@ -35,13 +35,13 @@ public class hexgame {
 	// constants and global variables
 	final static Color COLOURBACK = Color.WHITE;
 	final static Color COLOURCELL = Color.DARK_GRAY;
-	final static Color COLOURGRID = Color.BLACK;
+	final static Color COLOURGRID = Color.LIGHT_GRAY;
 	final static Color COLOURONE = Color.green;
 	final static Color COLOURONETXT = Color.WHITE;
 	final static Color COLOURTWO = Color.RED;
 	final static Color COLOURTWOTXT = Color.WHITE;
 
-	final static Color COLOURTHREE = Color.lightGray;
+	final static Color COLOURTHREE = Color.DARK_GRAY;
 	final static Color COLOURTHREETXT = Color.WHITE;
 
 	final static Color COLOURFOUR = Color.BLACK;
@@ -70,7 +70,7 @@ public class hexgame {
 	JSplitPane splitPane;
 	JPanel lblSheepsPerPlaye = new JPanel();
 
-	int numberOfSheepsPerPlayer = 0;
+	final static int numberOfSheepsPerPlayer = 16;
 	Boolean isHolding = false;
 	int holding = 0;
 
@@ -78,6 +78,8 @@ public class hexgame {
 	static int free = 0;
 	static int ai = 1;
 	static int wall = -99;
+
+	boolean isBoardBuilding =  true;
 
 	Map<Coordinate, GuiCell> hashMap = new HashMap<Coordinate, GuiCell>();
 
@@ -92,7 +94,7 @@ public class hexgame {
 	private final JLabel lblycoord = new JLabel("New label");
 	private final JButton btnDone = new JButton("Done");
 	private final JButton btnRepaint = new JButton("Repaint");
-	private final JButton btnDisable = new JButton("Disbable");
+	private final JButton btnDisable = new JButton("Done Board Building");
 
 	void initGame() {
 
@@ -127,13 +129,14 @@ public class hexgame {
 					hashMap.put(coordinate, guiCell);
 
 				} else {
-					GuiCell guiCell = new GuiCell(0, free);
+					GuiCell guiCell = new GuiCell(0, wall);
 					Coordinate coordinate = new Coordinate(i, j);
 					hashMap.put(coordinate, guiCell);
 				}
 
 			}
 		}
+		JOptionPane.showMessageDialog(null, "Right-Click a cell to build the board. Then click board building when done.");
 
 
 		// for ( Map.Entry<String, Tab> entry : hash.entrySet()) {
@@ -240,102 +243,103 @@ public class hexgame {
 
 	public void initializeSheeps() {
 		// initialize sheep
-		numberOfSheepsPerPlayer = Integer
-				.parseInt(JOptionPane.showInputDialog(null, "Total number of sheeps per player", "Welcome", 2));
-		lblSheepsPerPlayer.setText(Integer.toString(numberOfSheepsPerPlayer));
+//		numberOfSheepsPerPlayer = Integer
+//				.parseInt(JOptionPane.showInputDialog(null, "Total number of sheeps per player", "Welcome", 2));
+//		lblSheepsPerPlayer.setText(Integer.toString(numberOfSheepsPerPlayer));
 
-		initializeAISheeps();
-		initializePlayerSheeps();
+//		initializeAISheeps();
+		//initializePlayerSheeps();
+		hashMap.put(new Coordinate(1, 2), new GuiCell(numberOfSheepsPerPlayer, ai));
 		updateBoard();
 
 	}
 
-	public void initializeAISheeps() {
-
-		hashMap.put(new Coordinate(1, 2), new GuiCell(numberOfSheepsPerPlayer, ai));
-
-
-		hashMap.put(new Coordinate(1, 1), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(2, 1), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(3, 1), new GuiCell(numberOfSheepsPerPlayer, wall));
-
-		
-		hashMap.put(new Coordinate(1, 6), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(1, 7), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(1, 8), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(1, 9), new GuiCell(numberOfSheepsPerPlayer, wall));
-
-		hashMap.put(new Coordinate(2, 7), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(2, 8), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(2, 9), new GuiCell(numberOfSheepsPerPlayer, wall));
-
-		hashMap.put(new Coordinate(3, 7), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(3, 8), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(3, 9), new GuiCell(numberOfSheepsPerPlayer, wall));
-
-		hashMap.put(new Coordinate(4, 7), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(4, 8), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(4, 9), new GuiCell(numberOfSheepsPerPlayer, wall));
-
-		hashMap.put(new Coordinate(5, 5), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(5, 6), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(5, 7), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(5, 8), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(5, 9), new GuiCell(numberOfSheepsPerPlayer, wall));
-		
-		hashMap.put(new Coordinate(6, 5), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(6, 6), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(6, 7), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(6, 8), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(6, 9), new GuiCell(numberOfSheepsPerPlayer, wall));
-
-		hashMap.put(new Coordinate(7, 4), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(7, 5), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(7, 6), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(7, 7), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(7, 8), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(7, 9), new GuiCell(numberOfSheepsPerPlayer, wall));
-
-		hashMap.put(new Coordinate(8, 4), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(8, 5), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(8, 6), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(8, 7), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(8, 8), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(8, 9), new GuiCell(numberOfSheepsPerPlayer, wall));
-
-		hashMap.put(new Coordinate(9, 3), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(9, 4), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(9, 5), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(9, 6), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(9, 7), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(9, 8), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(9, 9), new GuiCell(numberOfSheepsPerPlayer, wall));
-
-		hashMap.put(new Coordinate(7, 1), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(8, 1), new GuiCell(numberOfSheepsPerPlayer, wall));
-		hashMap.put(new Coordinate(9, 1), new GuiCell(numberOfSheepsPerPlayer, wall));
-
-		hashMap.put(new Coordinate(4, 1), new GuiCell(numberOfSheepsPerPlayer, wall));
-
-		
-		// hashMap.put(new Coordinate(4, 1), new
-		// GuiCell(numberOfSheepsPerPlayer, ai));
-		//
-		// hashMap.put(new Coordinate(4, 2), new
-		// GuiCell(numberOfSheepsPerPlayer, ai));
-		//
-		// hashMap.put(new Coordinate(4, 3), new
-		// GuiCell(numberOfSheepsPerPlayer, ai));
-		//
-		// hashMap.put(new Coordinate(4, 5), new
-		// GuiCell(numberOfSheepsPerPlayer, ai));
-		// hashMap.put(new Coordinate(4, 6), new
-		// GuiCell(numberOfSheepsPerPlayer, ai));
-
-		// hashMap.put(new Coordinate(4, 2), new
-		// GuiCell(numberOfSheepsPerPlayer, ai));
-
-	}
+//	public void initializeAISheeps() {
+//
+//		hashMap.put(new Coordinate(1, 2), new GuiCell(numberOfSheepsPerPlayer, ai));
+////
+////
+////		hashMap.put(new Coordinate(1, 1), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(2, 1), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(3, 1), new GuiCell(numberOfSheepsPerPlayer, wall));
+////
+////
+////		hashMap.put(new Coordinate(1, 6), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(1, 7), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(1, 8), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(1, 9), new GuiCell(numberOfSheepsPerPlayer, wall));
+////
+////		hashMap.put(new Coordinate(2, 7), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(2, 8), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(2, 9), new GuiCell(numberOfSheepsPerPlayer, wall));
+////
+////		hashMap.put(new Coordinate(3, 7), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(3, 8), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(3, 9), new GuiCell(numberOfSheepsPerPlayer, wall));
+////
+////		hashMap.put(new Coordinate(4, 7), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(4, 8), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(4, 9), new GuiCell(numberOfSheepsPerPlayer, wall));
+////
+////		hashMap.put(new Coordinate(5, 5), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(5, 6), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(5, 7), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(5, 8), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(5, 9), new GuiCell(numberOfSheepsPerPlayer, wall));
+////
+////		hashMap.put(new Coordinate(6, 5), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(6, 6), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(6, 7), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(6, 8), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(6, 9), new GuiCell(numberOfSheepsPerPlayer, wall));
+////
+////		hashMap.put(new Coordinate(7, 4), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(7, 5), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(7, 6), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(7, 7), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(7, 8), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(7, 9), new GuiCell(numberOfSheepsPerPlayer, wall));
+////
+////		hashMap.put(new Coordinate(8, 4), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(8, 5), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(8, 6), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(8, 7), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(8, 8), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(8, 9), new GuiCell(numberOfSheepsPerPlayer, wall));
+////
+////		hashMap.put(new Coordinate(9, 3), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(9, 4), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(9, 5), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(9, 6), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(9, 7), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(9, 8), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(9, 9), new GuiCell(numberOfSheepsPerPlayer, wall));
+////
+////		hashMap.put(new Coordinate(7, 1), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(8, 1), new GuiCell(numberOfSheepsPerPlayer, wall));
+////		hashMap.put(new Coordinate(9, 1), new GuiCell(numberOfSheepsPerPlayer, wall));
+////
+////		hashMap.put(new Coordinate(4, 1), new GuiCell(numberOfSheepsPerPlayer, wall));
+//
+//
+//		// hashMap.put(new Coordinate(4, 1), new
+//		// GuiCell(numberOfSheepsPerPlayer, ai));
+//		//
+//		// hashMap.put(new Coordinate(4, 2), new
+//		// GuiCell(numberOfSheepsPerPlayer, ai));
+//		//
+//		// hashMap.put(new Coordinate(4, 3), new
+//		// GuiCell(numberOfSheepsPerPlayer, ai));
+//		//
+//		// hashMap.put(new Coordinate(4, 5), new
+//		// GuiCell(numberOfSheepsPerPlayer, ai));
+//		// hashMap.put(new Coordinate(4, 6), new
+//		// GuiCell(numberOfSheepsPerPlayer, ai));
+//
+//		// hashMap.put(new Coordinate(4, 2), new
+//		// GuiCell(numberOfSheepsPerPlayer, ai));
+//
+//	}
 
 	public void initializePlayerSheeps() {
 		int initialX = Integer.parseInt(
@@ -394,7 +398,10 @@ public class hexgame {
 
 		btnDisable.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				disable();
+				initializePlayerSheeps();
+				updateBoard();
+				isBoardBuilding = false;
+				btnDisable.setEnabled(false);
 			}
 		});
 
@@ -792,50 +799,49 @@ public class hexgame {
 				// board[2][3] = 'B';
 				// board[2][2] = 'C';
 				// board[3][2] = 'D';
-				try {
-					// if(p.x>BSIZE-2) {
+				if(e.getButton() == MouseEvent.BUTTON1) {
+					try {
+						// if(p.x>BSIZE-2) {
 
-					if (board[p.x][p.y].getOwner() == player && isHolding == false) {
+						if (board[p.x][p.y].getOwner() == player && isHolding == false) {
 
-						holding = Integer.parseInt(
-								JOptionPane.showInputDialog("How many sheeps would you like to get from here?", "0"));
+							holding = Integer.parseInt(
+									JOptionPane.showInputDialog("How many sheeps would you like to get from here?", "0"));
 
-						if (board[p.x][p.y].getValue() - holding < 1) {
-							JOptionPane.showMessageDialog(null, "You should leave at least one 1 sheep");
-							holding = 0;
-						} else {// take sheeps from player cell
-							isHolding = true;
-							lblxcoord.setText(Integer.toString(p.x));
-							lblycoord.setText(Integer.toString(p.y));
+							if (board[p.x][p.y].getValue() - holding < 1) {
+								JOptionPane.showMessageDialog(null, "You should leave at least one 1 sheep");
+								holding = 0;
+							} else {// take sheeps from player cell
+								isHolding = true;
+								lblxcoord.setText(Integer.toString(p.x));
+								lblycoord.setText(Integer.toString(p.y));
 
-							lblSheepAtHand.setText(Integer.toString(holding));
+								lblSheepAtHand.setText(Integer.toString(holding));
 
-							// System.out.println(hashMap.get(new
-							// Coordinate(p.x, p.y)).getValue());
-							// System.out.println("munis");
-							// System.out.println(holding);
+								// System.out.println(hashMap.get(new
+								// Coordinate(p.x, p.y)).getValue());
+								// System.out.println("munis");
+								// System.out.println(holding);
 
-							hashMap.put(new Coordinate(p.x, p.y),
-									new GuiCell(hashMap.get(new Coordinate(p.x, p.y)).getValue() - holding, player));
+								hashMap.put(new Coordinate(p.x, p.y),
+										new GuiCell(hashMap.get(new Coordinate(p.x, p.y)).getValue() - holding, player));
 
-							updateBoard();
-						}
+								updateBoard();
+							}
 
-					} else if ((board[p.x][p.y].getOwner() == player || board[p.x][p.y].getOwner() == ai)
-							&& isHolding == true) {
-						JOptionPane.showMessageDialog(null, "Please select a hex that is free");
-					} else if (isHolding == false) {
-						JOptionPane.showMessageDialog(null, "Please select sheeps first");
+						} else if ((board[p.x][p.y].getOwner() == player || board[p.x][p.y].getOwner() == ai)
+								&& isHolding == true) {
+							JOptionPane.showMessageDialog(null, "Please select a hex that is free");
+						} else if (isHolding == false) {
+							JOptionPane.showMessageDialog(null, "Please select sheeps first");
 
-					}
-
-					else if (board[p.x][p.y].getOwner() == free && isHolding == true) {
-						int oldX = Integer.parseInt(lblxcoord.getText());
-						int oldY = Integer.parseInt(lblycoord.getText());
-						// <<<<<<< HEAD
-						Coordinate oldCoordinate = new Coordinate(oldX, oldY);
-						Coordinate newCoordinate = new Coordinate(p.x, p.y);
-						if (validPlace(oldCoordinate, newCoordinate)) {
+						} else if (board[p.x][p.y].getOwner() == free && isHolding == true) {
+							int oldX = Integer.parseInt(lblxcoord.getText());
+							int oldY = Integer.parseInt(lblycoord.getText());
+							// <<<<<<< HEAD
+							Coordinate oldCoordinate = new Coordinate(oldX, oldY);
+							Coordinate newCoordinate = new Coordinate(p.x, p.y);
+							if (validPlace(oldCoordinate, newCoordinate)) {
 							/*
 							 * =======
 							 * 
@@ -845,38 +851,40 @@ public class hexgame {
 							 * >>>>>>> master
 							 */
 
-							hashMap.replace(new Coordinate(p.x, p.y), new GuiCell(holding, player));
+								hashMap.replace(new Coordinate(p.x, p.y), new GuiCell(holding, player));
 
-							isHolding = false;
-							holding = 0;
-							lblSheepAtHand.setText("none");
-							lblxcoord.setText("none");
-							lblycoord.setText("none");
-							updateBoard();
+								isHolding = false;
+								holding = 0;
+								lblSheepAtHand.setText("none");
+								lblxcoord.setText("none");
+								lblycoord.setText("none");
+								updateBoard();
 
-							// System.out.println("CANGED");
+								// System.out.println("CANGED");
+							}
+						} else if (board[p.x][p.y].getOwner() == ai) {
+							JOptionPane.showMessageDialog(null, "You cannot select sheeps that aren't yours");
+						} else if (board[p.x][p.y].getOwner() == ai && isHolding == true) {
+							JOptionPane.showMessageDialog(null, "You cannot add sheeps to hex that are not yours.");
 						}
+
+						// board[p.x][p.y] = "X";
+						// board[p.x + 1][p.y] = "X";
+						// board[p.x + 1][p.y - 1] = "X";
+						// board[p.x + 2][p.y] = "X";
+						// }
+
+					} catch (IndexOutOfBoundsException e1) {
+						// System.out.println("caught exception at hexagon: " + p.x
+						// + " " + p.y + "value: " + board[p.x][p.y]);
 					}
-
-					else if (board[p.x][p.y].getOwner() == ai) {
-						JOptionPane.showMessageDialog(null, "You cannot select sheeps that aren't yours");
-					}
-
-					else if (board[p.x][p.y].getOwner() == ai && isHolding == true) {
-						JOptionPane.showMessageDialog(null, "You cannot add sheeps to hex that are not yours.");
-					}
-
-					// board[p.x][p.y] = "X";
-					// board[p.x + 1][p.y] = "X";
-					// board[p.x + 1][p.y - 1] = "X";
-					// board[p.x + 2][p.y] = "X";
-					// }
-
-				} catch (IndexOutOfBoundsException e1) {
-					// System.out.println("caught exception at hexagon: " + p.x
-					// + " " + p.y + "value: " + board[p.x][p.y]);
 				}
+				else if(e.getButton() == MouseEvent.BUTTON3 && isBoardBuilding){
+					hashMap.put(new Coordinate(p.x, p.y),
+							new GuiCell(0, free));
 
+					updateBoard();
+				}
 				splitPane.repaint();
 			}
 
