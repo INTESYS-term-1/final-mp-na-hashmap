@@ -31,6 +31,7 @@ public class hexgame {
 		});
 	}
 
+	DrawingPanel panel;
 	// constants and global variables
 	final static Color COLOURBACK = Color.WHITE;
 	final static Color COLOURCELL = Color.DARK_GRAY;
@@ -54,16 +55,13 @@ public class hexgame {
 	final static int RIGHT_UP = 4;
 	final static int RIGHT_DOWN = 5;
 
-
-
-
 	// final static Color COLOURTWO = new Color(0,0,0,200);
 
 	final static int EMPTY = 1;
-	final static int BSIZE = 8; // board size.
-	final static int HEXSIZE = 75; // hex size in pixels
-	final static int BORDERS = 15;
-	final static int SCRSIZE = HEXSIZE * (BSIZE + 1) + BORDERS * 3; // screen
+	public static int BSIZE = 11; // board size.
+	final static int HEXSIZE = 60; // hex size in pixels
+	final static int BORDERS = 10;
+	int SCRSIZE = HEXSIZE * (BSIZE + 1) + BORDERS * 3; // screen
 	// size
 	// (vertical
 	// dimension).
@@ -93,6 +91,8 @@ public class hexgame {
 	private final JLabel lblxcoord = new JLabel("New label");
 	private final JLabel lblycoord = new JLabel("New label");
 	private final JButton btnDone = new JButton("Done");
+	private final JButton btnRepaint = new JButton("Repaint");
+	private final JButton btnDisable = new JButton("Disbable");
 
 	void initGame() {
 
@@ -101,6 +101,8 @@ public class hexgame {
 		hexmech.setHeight(HEXSIZE); // Either setHeight or setSize must be run
 		// to initialize the hex
 		hexmech.setBorders(BORDERS);
+
+		BSIZE = Integer.parseInt(JOptionPane.showInputDialog(null, "Board", "size of board?", 2));
 
 		for (int i = 0; i < BSIZE; i++) {
 			for (int j = 0; j < BSIZE; j++) {
@@ -133,6 +135,7 @@ public class hexgame {
 			}
 		}
 
+
 		// for ( Map.Entry<String, Tab> entry : hash.entrySet()) {
 		// String key = entry.getKey();
 		// Tab tab = entry.getValue();
@@ -158,32 +161,36 @@ public class hexgame {
 		// board[3][2] = 'D';
 
 		// displayBoardConsole();
-/*
-<<<<<<< HEAD
-		for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
-			Coordinate key = new Coordinate(entry.getKey());
-			GuiCell temp = new GuiCell(entry.getValue());
-			// Tab tab = entry.getValue();
-			// do something with key and/or tab
-			hashMap2.put(key, temp);
-		}
-
-		;
-		State state = new State(new HashMap(hashMap2), null, ai, 0);
-		ArrayList<State> states = state.generateStates();
-
-
-
-//		System.out.println("----------------------------");
-//		for (int i = 0; i < states.size(); i++) {
-//			states.get(i).print();
-//		}
-
-//		hashMap = states.get(states.size()-1).getHashMap();
-		updateBoard();
-=======*/
-//>>>>>>> master
+		/*
+		 * <<<<<<< HEAD for (Map.Entry<Coordinate, GuiCell> entry :
+		 * hashMap.entrySet()) { Coordinate key = new
+		 * Coordinate(entry.getKey()); GuiCell temp = new
+		 * GuiCell(entry.getValue()); // Tab tab = entry.getValue(); // do
+		 * something with key and/or tab hashMap2.put(key, temp); }
+		 * 
+		 * ; State state = new State(new HashMap(hashMap2), null, ai, 0);
+		 * ArrayList<State> states = state.generateStates();
+		 * 
+		 * 
+		 * 
+		 * // System.out.println("----------------------------"); // for (int i
+		 * = 0; i < states.size(); i++) { // states.get(i).print(); // }
+		 * 
+		 * // hashMap = states.get(states.size()-1).getHashMap(); updateBoard();
+		 * =======
+		 */
+		// >>>>>>> master
 		// displ3ayBoardConsole();
+
+	}
+
+	public void disable() {
+
+		int xBlack = Integer.parseInt(JOptionPane.showInputDialog(null, "Coordinate to black", "x", 2));
+
+		int yBlack = Integer.parseInt(JOptionPane.showInputDialog(null, "Coordinate to black", "y", 2));
+
+		hashMap.put(new Coordinate(xBlack, yBlack), new GuiCell(-99, wall));
 
 	}
 
@@ -244,7 +251,73 @@ public class hexgame {
 	}
 
 	public void initializeAISheeps() {
-		hashMap.put(new Coordinate(4, 4), new GuiCell(numberOfSheepsPerPlayer, ai));
+
+		hashMap.put(new Coordinate(1, 2), new GuiCell(numberOfSheepsPerPlayer, ai));
+
+
+		hashMap.put(new Coordinate(1, 1), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(2, 1), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(3, 1), new GuiCell(numberOfSheepsPerPlayer, wall));
+
+		
+		hashMap.put(new Coordinate(1, 6), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(1, 7), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(1, 8), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(1, 9), new GuiCell(numberOfSheepsPerPlayer, wall));
+
+		hashMap.put(new Coordinate(2, 7), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(2, 8), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(2, 9), new GuiCell(numberOfSheepsPerPlayer, wall));
+
+		hashMap.put(new Coordinate(3, 7), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(3, 8), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(3, 9), new GuiCell(numberOfSheepsPerPlayer, wall));
+
+		hashMap.put(new Coordinate(4, 7), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(4, 8), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(4, 9), new GuiCell(numberOfSheepsPerPlayer, wall));
+
+		hashMap.put(new Coordinate(5, 5), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(5, 6), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(5, 7), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(5, 8), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(5, 9), new GuiCell(numberOfSheepsPerPlayer, wall));
+		
+		hashMap.put(new Coordinate(6, 5), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(6, 6), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(6, 7), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(6, 8), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(6, 9), new GuiCell(numberOfSheepsPerPlayer, wall));
+
+		hashMap.put(new Coordinate(7, 4), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(7, 5), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(7, 6), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(7, 7), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(7, 8), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(7, 9), new GuiCell(numberOfSheepsPerPlayer, wall));
+
+		hashMap.put(new Coordinate(8, 4), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(8, 5), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(8, 6), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(8, 7), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(8, 8), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(8, 9), new GuiCell(numberOfSheepsPerPlayer, wall));
+
+		hashMap.put(new Coordinate(9, 3), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(9, 4), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(9, 5), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(9, 6), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(9, 7), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(9, 8), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(9, 9), new GuiCell(numberOfSheepsPerPlayer, wall));
+
+		hashMap.put(new Coordinate(7, 1), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(8, 1), new GuiCell(numberOfSheepsPerPlayer, wall));
+		hashMap.put(new Coordinate(9, 1), new GuiCell(numberOfSheepsPerPlayer, wall));
+
+		hashMap.put(new Coordinate(4, 1), new GuiCell(numberOfSheepsPerPlayer, wall));
+
+		
 		// hashMap.put(new Coordinate(4, 1), new
 		// GuiCell(numberOfSheepsPerPlayer, ai));
 		//
@@ -275,7 +348,7 @@ public class hexgame {
 	}
 
 	private void createAndShowGUI() {
-		DrawingPanel panel = new DrawingPanel();
+		panel = new DrawingPanel();
 
 		// JFrame.setDefaultLookAndFeelDecorated(true);
 		JFrame frame = new JFrame("Hex Testing 4");
@@ -303,6 +376,9 @@ public class hexgame {
 		lblSheepsPerPlaye.add(lblycoord, "cell 1 5,alignx left");
 
 		lblSheepsPerPlaye.add(btnDone, "cell 0 9,alignx center");
+		lblSheepsPerPlaye.add(btnRepaint, "cell 0 10,alignx center");
+		lblSheepsPerPlaye.add(btnDisable, "cell 0 12,alignx center");
+
 		splitPane.setDividerLocation(550);
 
 		Container content = frame.getContentPane();
@@ -316,9 +392,15 @@ public class hexgame {
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 
-		btnDone.addActionListener(new ActionListener() {
+		btnDisable.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				System.out.println("click");
+				disable();
+			}
+		});
+
+		btnRepaint.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				// System.out.println("click");
 				// Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate,
 				// GuiCell>(hashMap);
 				//
@@ -331,14 +413,84 @@ public class hexgame {
 				// GuiCell>(states.get(0).hashMap);
 				//
 				// System.out.println("Size of state: " + states.size());
-				// updateBoard();
-				Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate, GuiCell>(hashMap);
+				// // updateBoard();
 
-				State currState = new State(new HashMap<Coordinate, GuiCell>(hashMap2), null, ai, 0);
-				System.out.println("SCORE: " + currState.computeScore());
-				//algorithm();
+				// Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate,
+				// GuiCell>(hashMap);
+				//
+				State currState = new State(new HashMap<Coordinate, GuiCell>(hashMap), null, ai, 0);
+				// System.out.println("SCORE: " + currState.computeScore());
+
+				// algorithm();
 				// createAndShowGUI();
+
+				HashMap repaintMap = new HashMap(new HashMap(hashMap));
+
+				for (int i = 0; i < BSIZE; i++) {
+					for (int j = 0; j < BSIZE; j++) {
+						if (hashMap.get(new Coordinate(i, j)).getValue() == 0
+								&& hashMap.get(new Coordinate(i, j)).getOwner() == player) {
+							hashMap.get(new Coordinate(i, j)).setOwner(free);
+						}
+					}
+				}
+
+				splitPane.repaint();
+				panel.revalidate();
+				panel.repaint();
+				splitPane.revalidate();
+				splitPane.repaint();
+
 			}
+		});
+
+		btnDone.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+				// System.out.println("click");
+				// Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate,
+				// GuiCell>(hashMap);
+				//
+				// State state = new State(new HashMap<Coordinate,
+				// GuiCell>(hashMap2), null, ai, 0);
+				// ArrayList<State> states = new
+				// ArrayList<>(state.generateStates());
+				//
+				// hashMap = new HashMap<Coordinate,
+				// GuiCell>(states.get(0).hashMap);
+				//
+				// System.out.println("Size of state: " + states.size());
+				// // updateBoard();
+
+				// Map<Coordinate, GuiCell> hashMap2 = new HashMap<Coordinate,
+				// GuiCell>(hashMap);
+				//
+				State currState = new State(new HashMap<Coordinate, GuiCell>(hashMap), null, ai, 0);
+				// System.out.println("SCORE: " + currState.computeScore());
+
+				// algorithm();
+				// createAndShowGUI();
+
+				try {
+					hashMap = new HashMap(currState.getAttackingCoordinate().getHashMap());
+					//
+					// int numberOfAIValue1 = 0;
+					// int numberOfPlayerValue1 = 0;
+					//
+					// algorithm();
+
+					if (currState.generateStates().size() == 0) {
+						JOptionPane.showMessageDialog(null, "Game done");
+					}
+
+				} catch (Exception e) {
+					algorithm();
+				}
+
+				splitPane.repaint();
+
+			}
+
 		});
 
 	}
@@ -357,27 +509,31 @@ public class hexgame {
 
 		// State currState = initialState;
 
-		System.out.println("Board at algo");
+		// System.out.println("Board at algo");
 
 		explore.add(currState);
 
 		int i = 0;
 
 		while (i < explore.size()) {
-			System.out.println("I: " + i);
-			System.out.println("Size: " + explore.size());
-			System.out.println("Triggered algo");
+			if (currState.getLevel() == 2) {
+				break;
+			}
+			// System.out.println("I: " + i);
+			// System.out.println("Size: " + explore.size());
+			// System.out.println("Triggered algo");
+			System.out.println("------------Current state level: " + currState.getLevel());
 			currState = explore.get(i);
 			visited.add(currState);
 
-//			 if (currState.generateStates().size() == 0) {
-//			 currState.computeScore();
-//			 }
+			// if (currState.generateStates().size() == 0) {
+			// currState.computeScore();
+			// }
 
 			nextStates = currState.generateStates();
 			for (State s : nextStates) {
 				if (!visited.contains(s) && !explore.contains(s)) {
-					System.out.println("level: " + s.getLevel());
+					// System.out.println("level: " + s.getLevel());
 					explore.add(s);// uncomment for BFS
 
 				}
@@ -386,29 +542,45 @@ public class hexgame {
 		}
 
 		for (int m = 0; m < explore.size(); m++) {
-			if (explore.get(m).generateStates().size() == 0) {
+			if (explore.get(m).getLevel() >= 2) {
 				explore.get(m).computeScore();
 
-				System.out.println("Nagcompute at size:" + m);
+				// System.out.println("Nagcompute at size:" + m);
 			}
 		}
 
 		int maxScore = explore.get(0).getScore();
 
-		Map<Coordinate, GuiCell> tempHashMap = new HashMap<Coordinate, GuiCell>(explore.get(0).getHashMap());
+		Map<Coordinate, GuiCell> tempHashMap = null;
 
 		for (int j = 1; j < explore.size(); j++) {
-			if (explore.get(j).getScore() >= maxScore && explore.get(j).getLevel() == 4) {
+			if (explore.get(j).getScore() >= maxScore && explore.get(j).getLevel() == 1) {
 				maxScore = explore.get(j).getScore();
 				System.out.println("last loop: " + explore.get(j).getScore());
+
+				// explore.get(j).print();
+
 				tempHashMap = explore.get(j).getHashMap();
+				System.out.println("Score: " + explore.get(j).getScore());
 			}
 
 		}
 
-		hashMap = new HashMap<Coordinate, GuiCell>(tempHashMap);
+		try {
+			hashMap = new HashMap<Coordinate, GuiCell>(tempHashMap);
+
+		} catch (Exception e) {
+			// TODO: handle exception
+			JOptionPane.showMessageDialog(null, "Game done");
+
+		}
 
 		System.out.println("Done sa algo");
+
+		panel.revalidate();
+		panel.repaint();
+		splitPane.revalidate();
+		splitPane.repaint();
 
 	}
 
@@ -426,7 +598,7 @@ public class hexgame {
 		public void paintComponent(Graphics g) {
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			g.setFont(new Font("Consolas", Font.BOLD, 20));
+			g.setFont(new Font("Consolas", Font.BOLD, 15));
 			super.paintComponent(g2);
 			// draw grid
 			for (int i = 0; i < BSIZE; i++) {
@@ -454,142 +626,145 @@ public class hexgame {
 
 		class MyMouseListener extends MouseAdapter { // inner class inside
 			// DrawingPanel
-			private boolean isAtEnd(Coordinate oldPoint, Coordinate newPoint, int direction){
-				switch(direction){
-					case DOWN:
-						do{ // down
-							oldPoint.goDown();
-							if(!hashMap.containsKey(oldPoint))
-								break;
-						}while(hashMap.get(oldPoint).getOwner() == free);
-						oldPoint.goUp();
-						if(oldPoint.equals(newPoint))
-							return true;
-						break;
-					case UP:
-						do{// going up
-							oldPoint.goUp();
-							if(!hashMap.containsKey(oldPoint))
-								break;
-						}while(hashMap.get(oldPoint).getOwner() ==  free);
+			private boolean isAtEnd(Coordinate oldPoint, Coordinate newPoint, int direction) {
+				switch (direction) {
+				case DOWN:
+					do { // down
 						oldPoint.goDown();
-						if(oldPoint.equals(newPoint))
-							return true;
-						break;
-					case LEFT_DOWN:
-						do{// lower left diagonal
-							oldPoint.goLeftDown();
-							if(!hashMap.containsKey(oldPoint))
-								break;
-						}while(hashMap.get(oldPoint).getOwner() ==  free);
-						oldPoint.goRightUp();
-						if(oldPoint.equals(newPoint))
-							return true;
-						break;
-					case LEFT_UP:
-						do{// upper left diagonal
-							oldPoint.goLeftUp();
-							if(!hashMap.containsKey(oldPoint))
-								break;
-						}while(hashMap.get(oldPoint).getOwner() ==  free);
-						oldPoint.goRightDown();
-						if(oldPoint.equals(newPoint))
-							return true;
-						break;
-					case RIGHT_UP:
-						do{//upper right diagonal
-							oldPoint.goRightUp();
-							if(!hashMap.containsKey(oldPoint))
-								break;
-						}while(hashMap.get(oldPoint).getOwner() ==  free);
+						if (!hashMap.containsKey(oldPoint))
+							break;
+					} while (hashMap.get(oldPoint).getOwner() == free);
+					oldPoint.goUp();
+					if (oldPoint.equals(newPoint))
+						return true;
+					break;
+				case UP:
+					do {// going up
+						oldPoint.goUp();
+						if (!hashMap.containsKey(oldPoint))
+							break;
+					} while (hashMap.get(oldPoint).getOwner() == free);
+					oldPoint.goDown();
+					if (oldPoint.equals(newPoint))
+						return true;
+					break;
+				case LEFT_DOWN:
+					do {// lower left diagonal
 						oldPoint.goLeftDown();
-
-						if(oldPoint.equals(newPoint))
-							return true;
-						break;
-					case RIGHT_DOWN:
-						do{//lower right diagonal
-							oldPoint.goRightDown();
-							if(!hashMap.containsKey(oldPoint))
-								break;
-						}while(hashMap.get(oldPoint).getOwner() ==  free);
+						if (!hashMap.containsKey(oldPoint))
+							break;
+					} while (hashMap.get(oldPoint).getOwner() == free);
+					oldPoint.goRightUp();
+					if (oldPoint.equals(newPoint))
+						return true;
+					break;
+				case LEFT_UP:
+					do {// upper left diagonal
 						oldPoint.goLeftUp();
-						if(oldPoint.equals(newPoint))
-							return true;
-						break;
+						if (!hashMap.containsKey(oldPoint))
+							break;
+					} while (hashMap.get(oldPoint).getOwner() == free);
+					oldPoint.goRightDown();
+					if (oldPoint.equals(newPoint))
+						return true;
+					break;
+				case RIGHT_UP:
+					do {// upper right diagonal
+						oldPoint.goRightUp();
+						if (!hashMap.containsKey(oldPoint))
+							break;
+					} while (hashMap.get(oldPoint).getOwner() == free);
+					oldPoint.goLeftDown();
+
+					if (oldPoint.equals(newPoint))
+						return true;
+					break;
+				case RIGHT_DOWN:
+					do {// lower right diagonal
+						oldPoint.goRightDown();
+						if (!hashMap.containsKey(oldPoint))
+							break;
+					} while (hashMap.get(oldPoint).getOwner() == free);
+					oldPoint.goLeftUp();
+					if (oldPoint.equals(newPoint))
+						return true;
+					break;
 				}
 				return false;
 			}
-			private boolean validPlace(Coordinate old, Coordinate newPoint){
+
+			private boolean validPlace(Coordinate old, Coordinate newPoint) {
 				Coordinate oldPoint = new Coordinate(old.getX(), old.getY());
 
-				do{ // down
+				do { // down
 					oldPoint.goDown();
-					if(oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, DOWN)) {
+					if (oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, DOWN)) {
 						return true;
 					}
-					if(!hashMap.containsKey(oldPoint))
+					if (!hashMap.containsKey(oldPoint))
 						break;
-				}while(hashMap.get(oldPoint).getOwner() == free);
+				} while (hashMap.get(oldPoint).getOwner() == free);
 
 				oldPoint = new Coordinate(old.getX(), old.getY());
 
-				do{//lower right diagonal
+				do {// lower right diagonal
 					oldPoint.goRightDown();
-					if(oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, RIGHT_DOWN)) {
+					if (oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, RIGHT_DOWN)) {
 						return true;
 					}
-					if(!hashMap.containsKey(oldPoint))
+					if (!hashMap.containsKey(oldPoint))
 						break;
-				}while(hashMap.get(oldPoint).getOwner() ==  free);
+				} while (hashMap.get(oldPoint).getOwner() == free);
 
 				oldPoint = new Coordinate(old.getX(), old.getY());
 
-				do{//upper right diagonal
+				do {// upper right diagonal
 					oldPoint.goRightUp();
-					if(oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, RIGHT_UP)) {
+					if (oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, RIGHT_UP)) {
 						return true;
 					}
-					if(!hashMap.containsKey(oldPoint))
+					if (!hashMap.containsKey(oldPoint))
 						break;
-				}while(hashMap.get(oldPoint).getOwner() ==  free);
+				} while (hashMap.get(oldPoint).getOwner() == free);
 
 				oldPoint = new Coordinate(old.getX(), old.getY());
 
-				do{// going up
+				do {// going up
 					oldPoint.goUp();
-					if(oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, UP)) {
+					if (oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, UP)) {
 						return true;
 					}
-					if(!hashMap.containsKey(oldPoint))
+					if (!hashMap.containsKey(oldPoint))
 						break;
-				}while(hashMap.get(oldPoint).getOwner() ==  free);
+				} while (hashMap.get(oldPoint).getOwner() == free);
 
 				oldPoint = new Coordinate(old.getX(), old.getY());
 
-				do{// upper left diagonal
+				do {// upper left diagonal
 					oldPoint.goLeftUp();
-					if(oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, LEFT_UP)){
+					if (oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, LEFT_UP)) {
 						return true;
 					}
-					if(!hashMap.containsKey(oldPoint))
+					if (!hashMap.containsKey(oldPoint))
 						break;
-				}while(hashMap.get(oldPoint).getOwner() ==  free);
+				} while (hashMap.get(oldPoint).getOwner() == free);
 
 				oldPoint = new Coordinate(old.getX(), old.getY());
 
 				do {// lower left diagonal
 					oldPoint.goLeftDown();
-					if(oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, LEFT_DOWN)){
+					if (oldPoint.equals(newPoint) && isAtEnd(oldPoint, newPoint, LEFT_DOWN)) {
 
 						return true;
 					}
-					if(!hashMap.containsKey(oldPoint))
+					if (!hashMap.containsKey(oldPoint))
 						break;
-				}while (hashMap.get(oldPoint).getOwner() == free);
-				JOptionPane.showMessageDialog(null, "Can't place sheep there.", "Sorry", JOptionPane.INFORMATION_MESSAGE);
+				} while (hashMap.get(oldPoint).getOwner() == free);
+				JOptionPane.showMessageDialog(null, "Can't place sheep there.", "Sorry",
+						JOptionPane.INFORMATION_MESSAGE);
 				return false;
 			}
+
 			public void mouseClicked(MouseEvent e) {
 				// mPt.x = x;
 				// mPt.y = y;
@@ -635,9 +810,10 @@ public class hexgame {
 
 							lblSheepAtHand.setText(Integer.toString(holding));
 
-							System.out.println(hashMap.get(new Coordinate(p.x, p.y)).getValue());
-							System.out.println("munis");
-							System.out.println(holding);
+							// System.out.println(hashMap.get(new
+							// Coordinate(p.x, p.y)).getValue());
+							// System.out.println("munis");
+							// System.out.println(holding);
 
 							hashMap.put(new Coordinate(p.x, p.y),
 									new GuiCell(hashMap.get(new Coordinate(p.x, p.y)).getValue() - holding, player));
@@ -656,16 +832,18 @@ public class hexgame {
 					else if (board[p.x][p.y].getOwner() == free && isHolding == true) {
 						int oldX = Integer.parseInt(lblxcoord.getText());
 						int oldY = Integer.parseInt(lblycoord.getText());
-//<<<<<<< HEAD
-						Coordinate oldCoordinate =  new Coordinate(oldX, oldY);
-						Coordinate newCoordinate =  new Coordinate(p.x, p.y);
+						// <<<<<<< HEAD
+						Coordinate oldCoordinate = new Coordinate(oldX, oldY);
+						Coordinate newCoordinate = new Coordinate(p.x, p.y);
 						if (validPlace(oldCoordinate, newCoordinate)) {
-/*=======
-
-						// if (oldX - p.x == oldY - p.y || p.x - oldX == oldY -
-						// p.y || oldX - p.x == p.y - oldY
-						// || p.x - oldX == p.y - oldY || oldX == p.x) {
->>>>>>> master*/
+							/*
+							 * =======
+							 * 
+							 * // if (oldX - p.x == oldY - p.y || p.x - oldX ==
+							 * oldY - // p.y || oldX - p.x == p.y - oldY // ||
+							 * p.x - oldX == p.y - oldY || oldX == p.x) {
+							 * >>>>>>> master
+							 */
 
 							hashMap.replace(new Coordinate(p.x, p.y), new GuiCell(holding, player));
 
@@ -676,7 +854,7 @@ public class hexgame {
 							lblycoord.setText("none");
 							updateBoard();
 
-							System.out.println("CANGED");
+							// System.out.println("CANGED");
 						}
 					}
 
@@ -695,12 +873,12 @@ public class hexgame {
 					// }
 
 				} catch (IndexOutOfBoundsException e1) {
-					System.out.println("caught exception at hexagon: " + p.x + " " + p.y + "value: " + board[p.x][p.y]);
+					// System.out.println("caught exception at hexagon: " + p.x
+					// + " " + p.y + "value: " + board[p.x][p.y]);
 				}
 
-				repaint();
+				splitPane.repaint();
 			}
-
 
 		} // end of MyMouseListener class
 	} // end of DrawingPanel class
