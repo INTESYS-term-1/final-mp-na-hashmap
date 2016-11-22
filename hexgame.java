@@ -132,7 +132,7 @@ public class hexgame {
 
 			}
 		}
-		JOptionPane.showMessageDialog(null, "Right-Click a cell to build the board. Then click board building when done.");
+		JOptionPane.showMessageDialog(null, "Click a cell to build the board. Then click \"done board building\" button when done.");
 
 
 		// for ( Map.Entry<String, Tab> entry : hash.entrySet()) {
@@ -901,9 +901,10 @@ public class hexgame {
 					}
 				}
 				else if(isBoardBuilding){
-					hashMap.put(new Coordinate(p.x, p.y),
-							new GuiCell(0, free));
-
+					if(hashMap.get(new Coordinate(p.x, p.y)).getOwner() == wall )
+						hashMap.put(new Coordinate(p.x, p.y), new GuiCell(0, free));
+					else
+						hashMap.put(new Coordinate(p.x, p.y), new GuiCell(0, wall));
 					updateBoard();
 				}
 				splitPane.repaint();
