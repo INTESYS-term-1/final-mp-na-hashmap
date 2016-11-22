@@ -1,11 +1,7 @@
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -147,7 +143,7 @@ public class hexgame {
 
 		updateBoard();
 
-		initializeSheeps();
+		//initializeSheeps();
 
 		// initialize player's sheeps
 
@@ -240,19 +236,43 @@ public class hexgame {
 		}
 
 	}
+	private boolean isEdgeCell(Map.Entry<Coordinate,GuiCell> entry){
+		for(Coordinate c: entry.getKey().getSurroundingCoordinates()){
+			if(hashMap.get(c).getOwner() == wall)
+				return true;
+		}
 
-	public void initializeSheeps() {
-		// initialize sheep
-//		numberOfSheepsPerPlayer = Integer
-//				.parseInt(JOptionPane.showInputDialog(null, "Total number of sheeps per player", "Welcome", 2));
-//		lblSheepsPerPlayer.setText(Integer.toString(numberOfSheepsPerPlayer));
+		return false;
+	}
 
-//		initializeAISheeps();
-		//initializePlayerSheeps();
-		hashMap.put(new Coordinate(1, 2), new GuiCell(numberOfSheepsPerPlayer, ai));
+	private void randomPlaceAI(){
+		Collection c = hashMap.values();
+		Iterator itr = c.iterator();
+		Random r = new Random();
+		ArrayList<Map.Entry<Coordinate, GuiCell>> freeCells = new ArrayList<>();
+		for (Map.Entry<Coordinate, GuiCell> entry : hashMap.entrySet()) {
+			if(entry.getValue().getOwner() == free && isEdgeCell(entry)){
+				freeCells.add(entry);
+			}
+		}
+		hashMap.put(freeCells.get(r.nextInt(freeCells.size())).getKey(), new GuiCell(numberOfSheepsPerPlayer, ai));
 		updateBoard();
 
 	}
+
+//	public void initializeSheeps() {
+//		// initialize sheep
+////		numberOfSheepsPerPlayer = Integer
+////				.parseInt(JOptionPane.showInputDialog(null, "Total number of sheeps per player", "Welcome", 2));
+////		lblSheepsPerPlayer.setText(Integer.toString(numberOfSheepsPerPlayer));
+//
+////		initializeAISheeps();
+//		//initializePlayerSheeps();
+//		//hashMap.put(new Coordinate(1, 2), new GuiCell(numberOfSheepsPerPlayer, ai));
+//		randomPlaceAI();
+//		updateBoard();
+//
+//	}
 
 //	public void initializeAISheeps() {
 //
@@ -402,6 +422,7 @@ public class hexgame {
 				updateBoard();
 				isBoardBuilding = false;
 				btnDisable.setEnabled(false);
+				randomPlaceAI();
 			}
 		});
 
@@ -799,7 +820,7 @@ public class hexgame {
 				// board[2][3] = 'B';
 				// board[2][2] = 'C';
 				// board[3][2] = 'D';
-				if(e.getButton() == MouseEvent.BUTTON1) {
+				if(!isBoardBuilding) {
 					try {
 						// if(p.x>BSIZE-2) {
 
@@ -879,7 +900,7 @@ public class hexgame {
 						// + " " + p.y + "value: " + board[p.x][p.y]);
 					}
 				}
-				else if(e.getButton() == MouseEvent.BUTTON3 && isBoardBuilding){
+				else if(isBoardBuilding){
 					hashMap.put(new Coordinate(p.x, p.y),
 							new GuiCell(0, free));
 
